@@ -4,3 +4,5 @@ __pycache__
 __pycache__/*
 temp/*
 gportal/temp/*
+!temp/.tmp
+!gportal/temp/.tmp
