@@ -1,0 +1,3 @@
+Welcome to SGLI-API!
+This API is developed for searching and downloading SGLI Images. 
+This API is developed by Muhammad Salah (msalah.29.10@gmail.com)
