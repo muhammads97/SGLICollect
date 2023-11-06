@@ -62,9 +62,6 @@ if args.search:
         if args.latitude == None or args.longitude == None:
             print("latitude and longitude must be provided")
             exit(1)
-
-elif args.search_csv:
-    print("search_csv")
 elif args.download:
     print("download")
 elif args.download_csv:
