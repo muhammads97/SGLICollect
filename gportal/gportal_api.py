@@ -141,7 +141,18 @@ class GportalApi:
         self.pbar.update(1)
 
     async def __download(self, run, url, output_dir:Path, chunk_size=1000000):
+        file_name = url.split("/")[-1]
+        print("downloading file:", file_name, "into:", output_dir.absolute())
         file_size = await self.__get_size(url)
+        output_file = Path(os.path.join(output_dir, file_name))
+
+        # don't download if file already exists
+        if output_file.exists():
+            stats = os.stat(output_file)
+            if stats.st_size == file_size:
+                print("file already exists!")
+                return
+
         chunks = range(0, file_size, chunk_size)
         self.pbar = tqdm(total=len(chunks))
         tasks = [
@@ -156,8 +167,8 @@ class GportalApi:
         ]
         await asyncio.wait(tasks)
 
-        file_name = url.split("/")[-1]
-        with open(os.path.join(output_dir, file_name), 'wb') as o:
+        
+        with open(output_file, 'wb') as o:
             for i in range(len(chunks)):
                 chunk_path = f'./temp/tmp_product.part{i}'
 

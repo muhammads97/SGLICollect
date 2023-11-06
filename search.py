@@ -6,6 +6,7 @@ Email: msalah.29.10@gmail.com
 
 from argparse import Namespace
 from api_types import *
+from download import download, download_csv
 from gportal import GportalApi
 import pandas as pd
 import numpy as np
@@ -47,6 +48,11 @@ def search(args: Namespace):
     # print results
     print("returned results: ")
     result.print()
+
+    # if download option is set set the download url and call the download function
+    if args.download:
+        setattr(args, "download_url", result.properties.product.downloadUrl.geturl())
+        download(args)
 
 """
 Bulk search operation using csv file
@@ -117,5 +123,7 @@ def search_csv(args: Namespace):
 
     df.to_csv(args.csv, index=False) # save to csv
     pbar.close()
+
+    download_csv(args)
         
 

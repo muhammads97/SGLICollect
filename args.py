@@ -4,7 +4,6 @@ from pathlib import Path
 import json
 from api_types import *
 from gportal import GPortalLvlProd, GPortalResolution
-from pathlib import Path
 import os
 
 intro = open("./help/intro.txt")
@@ -37,13 +36,19 @@ parser.add_argument('--csv', nargs="?", type=Path,
                     help="a path to a json file containing the search results")
 parser.add_argument("--use-orbit", action="store_true", help="use the satellite path number and scene number instead of lat and long")
 parser.add_argument("--no-repeat", action="store_true", help="don't repeat if identifier exists")
+parser.add_argument("--account", type=str, help="account for gportal authentication")
+parser.add_argument("--password", type=str, help="password for gportal authentication")
+parser.add_argument("--download_dir", type=Path, default=Path("./temp"), help="directory path of the download location")
+parser.add_argument("--download_url", type=str, help="url of product to download")
+
 args = parser.parse_args()
 
 if args.config_file:
     f = open(args.config_file)
     config = json.load(f)
     f.close()
-    setattr(args, config["operation"], True)
+    for o in config["operations"]:
+        setattr(args, o, True)
     for k in config["args"].keys():
         if not isinstance(getattr(args, k), type(None)):
             setattr(args, k, type(getattr(args, k))(config["args"][k]))
@@ -62,8 +67,13 @@ if args.search:
         if args.latitude == None or args.longitude == None:
             print("latitude and longitude must be provided")
             exit(1)
-elif args.download:
-    print("download")
+if args.download:
+    if args.account == None: 
+        print("account must be provided")
+        exit(1)
+    if args.password == None:
+        print("password must be provided")
+        exit(1)
 elif args.download_csv:
     print("download_csv")
 else:

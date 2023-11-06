@@ -1,4 +1,5 @@
 from args import args
+from download import download, download_csv
 from search import search, search_csv
 
 if __name__ == "__main__":
@@ -7,9 +8,10 @@ if __name__ == "__main__":
             search_csv(args)
         else:
             search(args)
-    elif args.search_csv:
-        print("wait")
     elif args.download:
-        print("wait")
+        if args.csv:
+            download_csv(args)
+        else:
+            download(args)
     elif args.download_csv:
         print("wait")
