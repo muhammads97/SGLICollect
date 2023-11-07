@@ -6,3 +6,4 @@ temp/*
 gportal/temp/*
 !temp/.tmp
 !gportal/temp/.tmp
+*.ipynb
