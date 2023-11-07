@@ -1,4 +1,9 @@
-from pathlib import Path
+"""
+This module provide interface for extracting the pixel value out of an SGLI product using lat and long
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
+
 from .extractor_interface import Extractor
 from .utils import find_entry
 import numpy as np
@@ -8,6 +13,11 @@ import numpy as np
 class GPortalL1BExtractor(Extractor):
         
     def __handle_digital_number(self, prod_name:str) -> np.ndarray[float, float]:
+        """
+        Convert digital number to the desired product
+
+        :prod_name str the desired product (Lt01 to Lt11 for radiance) or (Rt01 to Rt11 for reflectance)
+        """
         # Get data
         if prod_name.startswith("L"):
             radiance = True

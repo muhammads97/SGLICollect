@@ -1,4 +1,9 @@
-from pathlib import Path
+"""
+This module provide interface for extracting the pixel value out of an SGLI product using lat and long
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
+
 from .extractor_interface import Extractor
 from .utils import find_entry
 import numpy as np
@@ -12,6 +17,11 @@ class GPortalL2PExtractor(Extractor):
                         ]
         
     def __digital_number_to_prod(self, prod_name:str) -> np.ndarray[float, float]:
+        """
+        Convert digital number to the desired product
+
+        :prod_name str the desired product (Lt01 to Lt11 for radiance) or (Rt01 to Rt11 for reflectance)
+        """
         # Get product data
         real_prod_name = prod_name.capitalize()
         data = self.__h5['Image_data/' + real_prod_name]
@@ -35,6 +45,11 @@ class GPortalL2PExtractor(Extractor):
         return prod
         
     def __calculate_flags(self, flags_value: int) -> dict:
+        """
+        Calculates a dictionary mapping of flag->boolean that indicates each flag and if it's set or not
+
+        :flags_value int the integer value of the flag
+        """
         flags = {}
         order = 0
         while order < 15:
