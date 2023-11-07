@@ -124,6 +124,8 @@ def search_csv(args: Namespace):
     df.to_csv(args.csv, index=False) # save to csv
     pbar.close()
 
-    download_csv(args)
+    # move to download option if download is set
+    if args.download:
+        download_csv(args)
         
 
