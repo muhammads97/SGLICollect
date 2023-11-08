@@ -1,3 +1,8 @@
+"""
+This module provide arguments of this API
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 import argparse
 import datetime
 from pathlib import Path

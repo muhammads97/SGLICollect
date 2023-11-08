@@ -10,17 +10,18 @@ from api_types import SGLIAPIs
 from gportal.gportal_api import GportalApi
 import pandas as pd
 
-"""
-Download a single product into a specified download directory
-arguments provided through json file or cmdline arguments:
-    - api: GPORTAL or JASMES, default: GPORTAL
-    - level_product: L1B, L2R, or L2P
-    - download_url: url of the product
-    - account: user account on GPORTAL
-    - password: GPORTAL password
-    - download_dir: directory to download the file
-"""
+
 def download(args: Namespace):
+    """
+    Download a single product into a specified download directory
+    arguments provided through json file or cmdline arguments:
+        - api: GPORTAL or JASMES, default: GPORTAL
+        - level_product: L1B, L2R, or L2P
+        - download_url: url of the product
+        - account: user account on GPORTAL
+        - password: GPORTAL password
+        - download_dir: directory to download the file
+    """
     # selecting which API
     if args.api == SGLIAPIs.GPORTAL:
         api = GportalApi(args.level_product)
@@ -41,19 +42,20 @@ def download(args: Namespace):
     api.download(download_url, args.download_dir)
 
 
-"""
-Bulk download operation using csv file
-arguments provided through json file or cmdline arguments:
-    - api: GPORTAL or JASMES, default: GPORTAL
-    - level_product: L1B, L2R, or L2P
-    - csv: path to csv file
-    - account: user account on GPORTAL
-    - password: GPORTAL password
-    - download_dir: directory to download the file
-CSV file columns:
-    - download_url
-"""
+
 def download_csv(args: Namespace):
+    """
+    Bulk download operation using csv file
+    arguments provided through json file or cmdline arguments:
+        - api: GPORTAL or JASMES, default: GPORTAL
+        - level_product: L1B, L2R, or L2P
+        - csv: path to csv file
+        - account: user account on GPORTAL
+        - password: GPORTAL password
+        - download_dir: directory to download the file
+    CSV file columns:
+        - download_url
+    """
     # selecting which API
     if args.api == SGLIAPIs.GPORTAL:
         api = GportalApi(args.level_product)

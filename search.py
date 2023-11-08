@@ -18,22 +18,26 @@ from gportal.gportal_types.gportal_resolution import GPortalResolution
 Utility function to get the value from a dict and validate it
 """
 def get_value(d: dict, key: str):
+    """
+    Utility function to get the value from a dict and validate it
+    """
     if key in d and d[key]:
         return d[key]
 
-"""
-Search a single instance and print the result to the terminal
-arguments provided through json file or cmdline arguments:
-    - api: GPORTAL or JASMES, default: GPORTAL
-    - level_product: L1B, L2R, or L2P
-    - date: string date
-    - latitude
-    - longitude
-    - resolution: str(250m or 1km) or int(250 or 1000)
-    - path_number: optional
-    - scene_number: optional
-"""
+
 def search(args: Namespace):
+    """
+    Search a single instance and print the result to the terminal
+    arguments provided through json file or cmdline arguments:
+        - api: GPORTAL or JASMES, default: GPORTAL
+        - level_product: L1B, L2R, or L2P
+        - date: string date
+        - latitude
+        - longitude
+        - resolution: str(250m or 1km) or int(250 or 1000)
+        - path_number: optional
+        - scene_number: optional
+    """
     # selecting which API
     if args.api == SGLIAPIs.GPORTAL:
         api = GportalApi(args.level_product)
@@ -42,7 +46,7 @@ def search(args: Namespace):
         exit(1)
 
     # send search request
-    result = api.search(args.date, args.date, args.latitude, args.longitude,
+    result = api.search(args.date, args.latitude, args.longitude,
                         args.resolution, args.path_number, args.scene_number)
     
     # print results
@@ -54,33 +58,34 @@ def search(args: Namespace):
         setattr(args, "download_url", result.properties.product.downloadUrl.geturl())
         download(args)
 
-"""
-Bulk search operation using csv file
-arguments provided through json file or cmdline arguments:
-    - api: GPORTAL or JASMES, default: GPORTAL
-    - level_product: L1B, L2R, or L2P
-    - csv: path to csv file
-    - no_repeat: boolean, if identifier exists will not search the corresponding row
-CSV file columns:
-    - date
-    - lat
-    - lon
-    - path_number: optional (will be used instead of lat and lon)
-    - scene_number: optional (will be used instead of lat and lon)
-    - resolution: optional (defaults to 250m)
-    - identifier: optional (if no_repeat set and identifier provided the corresponding row will be skipped)
 
-Output columns:
-    - identifier
-    - file_status
-    - resolution
-    - path_number
-    - scene_number
-    - download_url
-    - preview_url
-    - cloud_coverage (%)
-"""
 def search_csv(args: Namespace):
+    """
+    Bulk search operation using csv file
+    arguments provided through json file or cmdline arguments:
+        - api: GPORTAL or JASMES, default: GPORTAL
+        - level_product: L1B, L2R, or L2P
+        - csv: path to csv file
+        - no_repeat: boolean, if identifier exists will not search the corresponding row
+    CSV file columns:
+        - date
+        - lat
+        - lon
+        - path_number: optional (will be used instead of lat and lon)
+        - scene_number: optional (will be used instead of lat and lon)
+        - resolution: optional (defaults to 250m)
+        - identifier: optional (if no_repeat set and identifier provided the corresponding row will be skipped)
+
+    Output columns:
+        - identifier
+        - file_status
+        - resolution
+        - path_number
+        - scene_number
+        - download_url
+        - preview_url
+        - cloud_coverage (%)
+    """
     # selecting which API
     if args.api == SGLIAPIs.GPORTAL:
         api = GportalApi(args.level_product)
@@ -110,7 +115,7 @@ def search_csv(args: Namespace):
             continue
 
         # send search request 
-        result = api.search(date, date, lat, lon, resolution, path_number, scene_number, show_loading=False)
+        result = api.search(date, lat, lon, resolution, path_number, scene_number, show_loading=False)
 
         # if results returned add to the data
         if result != None:

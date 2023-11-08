@@ -1,3 +1,7 @@
+"""
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 from .gportal_product import GPortalProduct
 from .gportal_preview import GPortalPreview
 from .gportal_meta import GPortalMeta
@@ -31,6 +35,11 @@ class GPortalProperties:
     meta: GPortalMeta
 
     def __init__(self, response) -> None:
+        """
+        parser for GPortal properties response
+        
+        :response dict the json dictionary of the response
+        """
         self.identifier = str(response["identifier"])
         self.acquisitionType = str(response["acquisitionType"])
         self.imageQualityDegradation = str(response["imageQualityDegradation"])

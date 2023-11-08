@@ -1,3 +1,8 @@
+"""
+GPortal API
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 import requests
 import json
 import numpy as np
@@ -31,29 +36,57 @@ class GPortalLvlProd(Enum):
 
 class GportalApi:
     def __init__(self, type: GPortalLvlProd):
+        """
+        API to talk to GPortal 
+
+        :type GPortalLvlProd L1B, L2R, or L2P
+        """
         self.token = "7726524198fa59edb5564f6d939d5b168f1ed1d3288434f000028e2d1d982695f88f11a240a224e75516bca03d3aa9ec38d8dbf918b329733c0329003e9ec10f"
         self.baseurl = "https://gportal.jaxa.jp/gpr/search/catalog_records.json"
         self.headers = {
             "Cookie": "fuel_csrf_token=%s" % self.token
         }
-        self.dataset = DATASETS[type.value]
-        self.done = False
+        self.dataset = DATASETS[type.value] # select product
+        self.done = False # used for the loading function
 
     def set_auth_details(self, account:str, password: str):
+        """
+        sets the account and password for using for download functionality.
+        
+        | account : str user account
+        | password: str user password
+        """
         self.account = account
         self.password = password
 
-    def search(self, from_date: str, to_date: str, latitude: float, longitude: float, resolution: GPortalResolution, path_number: int = None, scene_number: int = None, show_loading: bool = True):
+    def search(self, date: str, latitude: float, longitude: float, resolution: GPortalResolution, path_number: int = None, scene_number: int = None, verbose: bool = True):
+        """
+        Searchs GPortal for a single product with a specific searc criteria.
+
+        | date   : string formated date YYYY/MM/DD
+        | latitude    : None or float
+        | longitude   : None or float
+        | resolution  : GPortalResolution (250m or 1km)
+        | path_number : integer value of the satellite path number (optional)
+        | scene_number: integer value of the satellite scene number (optional)
+        | verbose     : boolean 
+
+        Note: if path_number and scene_number are set, the latitude and longitude will be ignored.
+        """
+
+        # construct initial request body
         body = {
             "dataset[0][id]": self.dataset,
-            "obsdate[0][from]": from_date,
-            "obsdate[0][to]": to_date,
+            "obsdate[0][from]": date,
+            "obsdate[0][to]": date,
             "mapProjection": "EQ",
             "count": "1000",
             "dataset[0][Resolution][op]": "=",
             "dataset[0][Resolution][value][]": resolution.value,
             "fuel_csrf_token": self.token
         }
+
+        # add additional parameters
         if path_number:
             body["dataset[0][OrbitNumber][op]"] = "="
             body["dataset[0][OrbitNumber][value]"] = str(path_number).zfill(3)
@@ -61,30 +94,53 @@ class GportalApi:
             body["dataset[0][sceneNumber][op]"] = "="
             body["dataset[0][sceneNumber][value]"] = str(scene_number).zfill(2)
         if latitude != None and longitude != None:
+            # build a square polygon around the latitude and longitude
             body["coordinates"] = self.__construct_polygon_coordinates(longitude, latitude),
-        if show_loading:
-            t = threading.Thread(target=self.__animate, args=["Talking to GPortal"])
+        if verbose:
+            # show the loading message in a separate thread and wait until search is done
+            t = threading.Thread(target=self.__show_loading_msg, args=["Talking to GPortal"])
             t.start()
-        try:
+        
+        try: # send the request and wait for the response from GPortal
             res = requests.post(self.baseurl, data=body, headers=self.headers)
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.ConnectionError: # if connection error return None
             print(
                 "Connection aborted by GPortal, please try again with more specific search criteria.")
             self.done = True
-            exit(1)
-        self.done = True
+            return None
+        
+        # stop the loading message thread
+        self.done = True 
         time.sleep(0.2)
+
+        # parse the results
         results = json.loads(res.content)
         results = GPortalSearchResult(results)
+
+        # filter the results to get a single product the best matchs the search criteria
         return results.filter_results(longitude, latitude)
 
     def download(self, url: str, output_dir: Path, max_workers=20):
+        """
+        Downloads a single product from GPortal.
+
+        | url        : string url of the product to download
+        | output_dir : Path of the output directory to download the product
+        | max_workers: number of threads to download in parallel
+
+        Must call set_auth_details before calling this function.
+        """
+
+        # authenticate GPortal using account and password
         self.__auth()
+
+        # setting up the thread pool
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=max_workers)
         loop = asyncio.new_event_loop()
         run = functools.partial(loop.run_in_executor, executor)
-
         asyncio.set_event_loop(loop)
+
+        # run the download in multithreading
         try:
             loop.run_until_complete(
                 self.__download(run, url, output_dir)
@@ -93,6 +149,7 @@ class GportalApi:
             loop.close()
 
     def __construct_polygon_coordinates(self, lon: float, lat: float):
+        """constructs a polygon of size 1x1 around the latitude and longitude"""
         lon1 = str(lon - 0.5)
         lon2 = str(lon + 0.5)
         lat1 = str(lat - 0.5)
@@ -101,7 +158,9 @@ class GportalApi:
             lon2, lat2, lon1, lat2, lon1, lat1, lon2, lat1, lon2, lat2)
         return polygon
 
-    def __animate(self, msg:str="loading"):
+    def __show_loading_msg(self, msg:str="loading"):
+        """shows a loading message for the search functionality"""
+
         for c in itertools.cycle(['|', '/', '-', '\\']):
             if self.done:
                 break
@@ -111,6 +170,11 @@ class GportalApi:
         sys.stdout.write('\r\n')
         
     def __auth(self):
+        """
+        authenticates the user on GPortal
+        
+        account and password must be provided via set_auth_details
+        """
         auth_url = "https://gportal.jaxa.jp/gpr/auth/authenticate.json"
         body = {
         "account": self.account,
@@ -120,17 +184,22 @@ class GportalApi:
 
         res = requests.post(auth_url, body, headers = self.headers)
         if res.ok:
+            # set the cookie
             cookie = res.headers["Set-Cookie"].split("secure, ")[-1]
             self.headers["Cookie"] = cookie
         else:
             print("auth failed!") 
     
     async def __get_size(self, url:str):
+        """
+        returns the size of the file to be downloaded
+        """
         response = requests.head(url, headers=self.headers)
         size = int(response.headers['Content-Length'])
         return size
 
     def __download_range(self, url:str, start:int, end:int, output_path:Path):
+        """downloads a sequence of bytes from start to end."""
         headers = {'Range': f'bytes={start}-{end}'}
         headers.update(self.headers)
         response = requests.get(url, headers=headers)
@@ -141,6 +210,7 @@ class GportalApi:
         self.pbar.update(1)
 
     async def __download(self, run, url, output_dir:Path, chunk_size=1000000):
+        """download the file by dividing it into chucks of 1mb and calling a thread for each chunck"""
         file_name = url.split("/")[-1]
         print("downloading file:", file_name, "into:", output_dir.absolute())
         file_size = await self.__get_size(url)
@@ -167,7 +237,7 @@ class GportalApi:
         ]
         await asyncio.wait(tasks)
 
-        
+        # collect the downloaded chuncks in one file
         with open(output_file, 'wb') as o:
             for i in range(len(chunks)):
                 chunk_path = f'./temp/tmp_product.part{i}'

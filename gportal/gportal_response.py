@@ -1,3 +1,8 @@
+"""
+Parser for GPortal API search results
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 import numpy as np
 from .gportal_types import GPortalProperties, GPortalGeo
 from .utils import inside_polygon, min_distance
@@ -22,12 +27,18 @@ class GPortalResponse:
     geometry: GPortalGeo
     properties: GPortalProperties
 
-    def __init__(self, response) -> None:
+    def __init__(self, response:dict) -> None:
+        """
+        parse the response of one result returned from GPortal
+        
+        :response dictionary of the json response
+        """
         self.type = str(response["type"])
         self.geometry = GPortalGeo(response["geometry"])
         self.properties = GPortalProperties(response["properties"])
 
     def to_json(self) -> dict:
+        """convert it to json"""
         return {
             "type": self.type,
             "geometry": self.geometry.to_json(),
@@ -35,6 +46,9 @@ class GPortalResponse:
         }
     
     def to_dataframe(self, df:pd.DataFrame=None, index:int=None):
+        """
+        appends the response to a dataframe in index
+        """
         if df is None:
             df = pd.DataFrame(columns=OUTPUT_COLUMNS)
         if index is None:
@@ -68,6 +82,9 @@ class GPortalResponse:
     
 
     def save(self, path: Path):
+        """
+        saves to csv file
+        """
         try:
             df = pd.read_csv(path)
         except:
@@ -76,6 +93,9 @@ class GPortalResponse:
         df.to_csv(path)
         return df
     def print(self):
+        """
+        prints the product to screen
+        """
         print(
             "ID: %s"%self.properties.identifier,
             "status: %s"%self.properties.status,
@@ -92,29 +112,59 @@ class GPortalResponse:
 
 class GPortalSearchResult:
     results: list[GPortalResponse]
-    def __init__(self, response) -> None:
+    def __init__(self, response:dict) -> None:
+        """
+        parses the returned results from GPortal
+        """
         self.results = [GPortalResponse(f) for f in response["features"]]
 
-    def filter_results(self, lon: int, lat: int) -> GPortalResponse:
-        if lat == None or lon == None:
-            return self.results[0]
-        filtered: list[GPortalResponse] = []
-        for f in self.results:
-            poly = f.geometry.coordinates
-            poly = np.array(poly)
-            poly = poly.T
-            if inside_polygon(poly[0], poly[1], lon, lat) == 1:
-                filtered.append(f)
-        if len(filtered) > 1:
-            boarder_dis = []
-            point = [lat, lon]
-            for i in range(len(filtered)):
-                bolygon = filtered[i].geometry.coordinates
-                boarder_dis.append(min_distance(point, bolygon))
-            j = boarder_dis.index(max(boarder_dis))
+    def filter_results(self, lat:float = None, lon:float=None, path_number:int=None, scene_number:int=None) -> GPortalResponse:
+        """
+        Filters the results to make sure the given latitude and longitude are within the product coordinates.
+        Then selects the product in which the given latitude and longitude are closer to the center.
+
+        | lat         : float latitude
+        | lon         : float longitude
+        | path_number : int 
+        | scene_number: int
+
+        return None if no results
+
+        if neither path and scene nor lat and lon are provided return the first result
+
+        if pth and scene numbers are set, filter results to find the matching product
+
+        if lat and lon are set, filter the results using lat and lon
+
+        """
+        if len(self.results) == 0: return None
+
+        if (path_number == None or scene_number == None) and (lat == None or lon == None):
+            return self.results[0] # no filtering arguments provided
+        elif path_number != None and scene_number != None:
+            for f in self.results:
+                if path_number == int(f.properties.orbitNumber) and scene_number == f.properties.meta.sceneNumber:
+                    return f # first product with matching path and scene numbers
+            return None # no matching product
         else:
-            j = 0
-        if len(filtered) == 0: return None
-        return filtered[j]
+            filtered: list[GPortalResponse] = [] # contains all the products that INCLUDE the given lat and lon
+            for f in self.results:
+                poly = f.geometry.coordinates
+                poly = np.array(poly)
+                poly = poly.T
+                if inside_polygon(poly[0], poly[1], lon, lat) == 1:
+                    filtered.append(f)
+
+            if len(filtered) > 1:
+                boarder_dis = []
+                point = [lat, lon]
+                for i in range(len(filtered)):
+                    polygon = filtered[i].geometry.coordinates
+                    boarder_dis.append(min_distance(point, polygon))
+                j = boarder_dis.index(max(boarder_dis)) # index of the product with lat and lon closest to center
+            else:
+                j = 0
+            if len(filtered) == 0: return None
+            return filtered[j]
     
     

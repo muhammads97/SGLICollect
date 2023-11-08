@@ -1,3 +1,7 @@
+"""
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 from .gportal_resolution import GPortalResolution
 
 
@@ -40,7 +44,12 @@ class GPortalMeta:
     pseq: str
     hasProduct: bool
 
-    def __init__(self, response) -> None:
+    def __init__(self, response:dict) -> None:
+        """
+        parser for GPortal meta response (gpp)
+        
+        :response dict the json dictionary of the response (gpp)
+        """
         self.datasetId = str(response["datasetId"])
         self.totalQualityCode = str(response["totalQualityCode"])
         self.cloudCoverPercentage = int(response["cloudCoverPercentage"])

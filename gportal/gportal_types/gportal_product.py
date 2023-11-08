@@ -1,3 +1,7 @@
+"""
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 from urllib.parse import urlparse, ParseResult
 
 
@@ -7,7 +11,12 @@ class GPortalProduct:
     formatType: str
     version: int
 
-    def __init__(self, response) -> None:
+    def __init__(self, response: dict) -> None:
+        """
+        parser for GPortal product response (product)
+        
+        :response dict the json dictionary of the response (product)
+        """
         self.downloadUrl = urlparse(response["fileName"])
         self.size = int(response["size"])
         self.formatType = response["DataFormatType"]
