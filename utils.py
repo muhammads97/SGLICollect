@@ -5,6 +5,7 @@ def empty_temp():
     Clear the temporary files from ./temp
     """
     for filename in os.listdir("./temp"):
+        if filename.endswith("tmp"): continue
         file_path = os.path.join("./temp", filename)
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
