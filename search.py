@@ -23,6 +23,17 @@ def get_value(d: dict, key: str):
     """
     if key in d and d[key]:
         return d[key]
+    
+def fill_group(df, g):
+    for j in range(len(g)):
+        df.loc[df.index[g.index[j]], "identifier"] = g.iloc[0]["identifier"]
+        df.loc[df.index[g.index[j]], "file_status"] = g.iloc[0]["file_status"]
+        df.loc[df.index[g.index[j]], "resolution"] = g.iloc[0]["resolution"]
+        df.loc[df.index[g.index[j]], "path_number"] = g.iloc[0]["path_number"]
+        df.loc[df.index[g.index[j]], "scene_number"] = g.iloc[0]["scene_number"]
+        df.loc[df.index[g.index[j]], "download_url"] = g.iloc[0]["download_url"]
+        df.loc[df.index[g.index[j]], "preview_url"] = g.iloc[0]["preview_url"]
+        df.loc[df.index[g.index[j]], "cloud_coverage"] = g.iloc[0]["cloud_coverage"]
 
 
 def search(args: Namespace):
@@ -182,6 +193,7 @@ def search_csv_grouped(args: Namespace):
 
         # progress if no repeat and id exists
         if id and args.no_repeat: 
+            fill_group(df, g)
             pbar.update(len(g))
             continue
 
