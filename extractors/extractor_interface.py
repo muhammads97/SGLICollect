@@ -9,7 +9,8 @@ import h5py
 import numpy as np
 
 class Extractor:
-    __h5: h5py.File = None
+    _h5: h5py.File = None
+
 
     def __init__(self, path: Path):
         """
@@ -17,15 +18,15 @@ class Extractor:
         
         :path Path path to h5 product file
         """
-        print("reading file: %s" % path)
+        # print("reading file: %s" % path)
         f = h5py.File(path, 'r')
-        self.__h5 = f
+        self._h5 = f
 
     def close(self):
         """
         closes the h5 file
         """
-        self.__h5.close()
+        self._h5.close()
 
     def bilin_2d(self, data: np.ndarray, interval: int, lon_mode:bool=False):
         """
@@ -75,15 +76,15 @@ class Extractor:
         """
         get the 2d vector of latitude and longitude
         """
-        lat = self.__h5['Geometry_data/Latitude']
-        lon = self.__h5['Geometry_data/Longitude']
+        lat = self._h5['Geometry_data/Latitude']
+        lon = self._h5['Geometry_data/Longitude']
         resampling_interval = lat.attrs['Resampling_interval'][0]
         if resampling_interval > 1:
             lat = self.bilin_2d(lat[:], resampling_interval, False)
             lon = self.bilin_2d(lon[:], resampling_interval, True)
         (size_lin, size_pxl) = lat.shape
 
-        img_attrs = self.__h5['Image_data'].attrs
+        img_attrs = self._h5['Image_data'].attrs
         img_n_pix = img_attrs['Number_of_pixels'][0]
         img_n_lin = img_attrs['Number_of_lines'][0]
         if (img_n_lin <= size_lin) and (img_n_pix <= size_pxl):
@@ -99,5 +100,11 @@ class Extractor:
         | lon: float the longitude of the required pixel
         """
         pass
+    @classmethod
+    def get_file_ext(self)->str:
+        return "h5"
+    @classmethod
+    def make_file_name(self, identifier)->str:
+        return identifier + "." + self.get_file_ext()
 
     

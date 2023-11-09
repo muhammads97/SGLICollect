@@ -45,7 +45,8 @@ parser.add_argument("--account", type=str, help="account for gportal authenticat
 parser.add_argument("--password", type=str, help="password for gportal authentication")
 parser.add_argument("--download_dir", type=Path, default=Path("./temp"), help="directory path of the download location")
 parser.add_argument("--download_url", type=str, help="url of product to download")
-
+parser.add_argument("--product_path", type=Path, help="product path for extract option")
+parser.add_argument("--product_dir", type=Path, help="directory containing products to extract")
 args = parser.parse_args()
 
 if args.config_file:
@@ -79,8 +80,11 @@ if args.download:
     if args.password == None:
         print("password must be provided")
         exit(1)
-elif args.download_csv:
-    print("download_csv")
+if args.extract:
+    if not args.csv:
+        if args.latitude == None or args.longitude == None:
+            print("latitude and longitude must be provided")
+            exit(1)   
 else:
     print("No option provided!")
     parser.print_help()

@@ -24,7 +24,7 @@ class GPortalL2PExtractor(Extractor):
         """
         # Get product data
         real_prod_name = prod_name.capitalize()
-        data = self.__h5['Image_data/' + real_prod_name]
+        data = self._h5['Image_data/' + real_prod_name]
 
         # Validate
         prod = data[:].astype(np.float32)
@@ -61,8 +61,8 @@ class GPortalL2PExtractor(Extractor):
     def get_pixel(self, lat:float, lon:float) -> dict:
         lat_mat, lon_mat = self.get_lat_lon()
         row, col, distance = find_entry(lat_mat, lon_mat, lat, lon)
-        print("=> matching point with distance^2 = %f" % (distance))
-        flags = self.__calculate_flags(self.__h5["Image_data/QA_flag"][row, col])
+        # print("=> matching point with distance^2 = %f" % (distance))
+        flags = self.__calculate_flags(self._h5["Image_data/QA_flag"][row, col])
         pixel = {
             "Chla": self.__digital_number_to_prod("Chla")[row, col],
             "aCDOM_412": self.__digital_number_to_prod("CDOM")[row, col],

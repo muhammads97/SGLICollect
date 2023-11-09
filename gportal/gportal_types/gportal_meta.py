@@ -2,6 +2,7 @@
 Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """
+from .utils import int_or_none, float_or_none
 from .gportal_resolution import GPortalResolution
 
 
@@ -52,23 +53,23 @@ class GPortalMeta:
         """
         self.datasetId = str(response["datasetId"])
         self.totalQualityCode = str(response["totalQualityCode"])
-        self.cloudCoverPercentage = int(response["cloudCoverPercentage"])
+        self.cloudCoverPercentage = int_or_none(response["cloudCoverPercentage"])
         self.operatorComment = str(response["operatorComment"])
-        self.compressFlag = int(response["compressFlag"])
+        self.compressFlag = int_or_none(response["compressFlag"])
         self.physicalQuantity = str(response["physicalQuantity"])
         self.resolution = GPortalResolution(response["Resolution"])
-        self.browseImageSize = int(response["browseImageSize"])
-        self.parameterVersion = int(response["parameterVersion"])
-        self.algorithmVersion = int(response["algorithmVersion"])
-        self.numberPixels = int(response["numberPixels"])
-        self.numberLines = int(response["numberLines"])
-        self.numberBands = int(response["numberBands"])
-        self.numberMissingData = int(response["numberMissingData"])
-        self.sceneNumber = int(response["sceneNumber"])
-        self.startPathNumber = int(response["startPathNumber"])
-        self.endPathNumber = int(response["endPathNumber"])
-        self.startArgumentLat = float(response["startArgumentLat"])
-        self.endArgumentLat = float(response["endArgumentLat"])
+        self.browseImageSize = int_or_none(response["browseImageSize"])
+        self.parameterVersion = int_or_none(response["parameterVersion"])
+        self.algorithmVersion = int_or_none(response["algorithmVersion"])
+        self.numberPixels = int_or_none(response["numberPixels"])
+        self.numberLines = int_or_none(response["numberLines"])
+        self.numberBands = int_or_none(response["numberBands"])
+        self.numberMissingData = int_or_none(response["numberMissingData"])
+        self.sceneNumber = int_or_none(response["sceneNumber"])
+        self.startPathNumber = int_or_none(response["startPathNumber"])
+        self.endPathNumber = int_or_none(response["endPathNumber"])
+        self.startArgumentLat = float_or_none(response["startArgumentLat"])
+        self.endArgumentLat = float_or_none(response["endArgumentLat"])
         self.mapProjection = str(response["mapProjection"])
         self.mapDirection = str(response["mapDirection"])
         self.orbitDirection = str(response["orbitDirection"])
@@ -81,9 +82,9 @@ class GPortalMeta:
         self.sensorOffPeriod = str(response["sensorOffPeriod"])
         self.sceneCenterTime = str(response["sceneCenterTime"])
         self.startSubsatellitePosition = tuple(
-            [float(coord) for coord in response["startSubsatellitePosition"].split(" ")])
+            [float_or_none(coord) for coord in response["startSubsatellitePosition"].split(" ")])
         self.endSubsatellitePosition = tuple(
-            [float(coord) for coord in response["endSubsatellitePosition"].split(" ")])
+            [float_or_none(coord) for coord in response["endSubsatellitePosition"].split(" ")])
         self.ProcessTimeUnit = str(response["ProcessTimeUnit"])
         self.tileHNo = str(response["tileHNo"])
         self.tileVNo = str(response["tileVNo"])

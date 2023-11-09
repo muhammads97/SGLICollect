@@ -3,7 +3,7 @@ Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """
 
-def inside_polygon(px: list[float], py: list[float], x: float, y: float):
+def inside_polygon(px: list[float], py: list[float], x: float, y: float)->bool:
     """
     tests if point (x, y) is inside the polygon 
     
@@ -32,9 +32,9 @@ def inside_polygon(px: list[float], py: list[float], x: float, y: float):
         i += 1
 
     if (counter % 2 == 0):
-        return 0
+        return True
     else:
-        return 1
+        return False
 
 def distance(coord1, coord2):
     return ((coord1[0]-coord2[0])**2 + (coord1[1]-coord2[1])**2)**0.5

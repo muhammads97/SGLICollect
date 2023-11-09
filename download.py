@@ -7,6 +7,7 @@ Email: msalah.29.10@gmail.com
 from argparse import Namespace
 
 from api_types import SGLIAPIs
+from extract import extract, extract_csv
 from gportal.gportal_api import GportalApi
 import pandas as pd
 
@@ -39,7 +40,11 @@ def download(args: Namespace):
     # this is only needed for download not search
     api.set_auth_details(args.account, args.password)
     # start the download process
-    api.download(download_url, args.download_dir)
+    product_path = api.download(download_url, args.download_dir)
+    if args.extract:
+        setattr(args, "product_path", product_path)
+        extract(args)
+
 
 
 
@@ -63,6 +68,9 @@ def download_csv(args: Namespace):
         print("to be implemented")
         exit(1)
     
+    print("=============================")
+    print("Downloading files...")
+    print("=============================")
     # supply the API with the auth credentials  
     # this is only needed for download not search
     api.set_auth_details(args.account, args.password)
@@ -71,6 +79,13 @@ def download_csv(args: Namespace):
     df =df.groupby("download_url") # only download uniqe urls
 
     for i, (url, _) in enumerate(df):
-        print("==========>",i+1, "out of", len(df)) # progress indicator 
+        print(f"> {i+1}/{len(df)}", end=": ") # progress indicator 
         # start the download of the i's url
         api.download(url, args.download_dir)
+
+    
+    if args.extract:
+        setattr(args, "product_dir", args.download_dir)
+        extract_csv(args)
+
+    

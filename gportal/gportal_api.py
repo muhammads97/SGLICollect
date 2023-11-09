@@ -7,7 +7,7 @@ import requests
 import json
 import numpy as np
 from enum import Enum
-from .gportal_response import GPortalSearchResult
+from .gportal_response import GPortalResponse, GPortalSearchResult
 from .gportal_types import GPortalResolution
 import sys
 import time
@@ -59,7 +59,7 @@ class GportalApi:
         self.account = account
         self.password = password
 
-    def search(self, date: str, latitude: float, longitude: float, resolution: GPortalResolution, path_number: int = None, scene_number: int = None, verbose: bool = True):
+    def search(self, date: str, latitude: float, longitude: float, resolution: GPortalResolution, path_number: int = None, scene_number: int = None, verbose: bool = True)->GPortalResponse:
         """
         Searchs GPortal for a single product with a specific searc criteria.
 
@@ -116,11 +116,10 @@ class GportalApi:
         # parse the results
         results = json.loads(res.content)
         results = GPortalSearchResult(results)
-
         # filter the results to get a single product the best matchs the search criteria
         return results.filter_results(longitude, latitude)
 
-    def download(self, url: str, output_dir: Path, max_workers=20):
+    def download(self, url: str, output_dir: Path, max_workers=20)->Path:
         """
         Downloads a single product from GPortal.
 
@@ -147,6 +146,11 @@ class GportalApi:
             )
         finally:
             loop.close()
+
+        file_name = url.split("/")[-1]
+        output_file = Path(os.path.join(output_dir, file_name))
+        return output_file
+
 
     def __construct_polygon_coordinates(self, lon: float, lat: float):
         """constructs a polygon of size 1x1 around the latitude and longitude"""
@@ -187,7 +191,7 @@ class GportalApi:
             # set the cookie
             cookie = res.headers["Set-Cookie"].split("secure, ")[-1]
             self.headers["Cookie"] = cookie
-        else:
+        elif res.status_code != 406:
             print("auth failed!") 
     
     async def __get_size(self, url:str):
@@ -209,7 +213,7 @@ class GportalApi:
                 f.write(part)
         self.pbar.update(1)
 
-    async def __download(self, run, url, output_dir:Path, chunk_size=1000000):
+    async def __download(self, run, url, output_dir:Path, chunk_size=2000000):
         """download the file by dividing it into chucks of 1mb and calling a thread for each chunck"""
         file_name = url.split("/")[-1]
         print("downloading file:", file_name, "into:", output_dir.absolute())
@@ -220,20 +224,22 @@ class GportalApi:
         if output_file.exists():
             stats = os.stat(output_file)
             if stats.st_size == file_size:
-                print("file already exists!")
+                # print("file already exists!")
                 return
 
-        chunks = range(0, file_size, chunk_size)
+        chunks = [(i*chunk_size, (i+1)*chunk_size-1) for i in range(file_size//chunk_size)]
+        if file_size%chunk_size > 0: chunks.append((chunks[-1][1]+1, chunks[-1][1]+file_size%chunk_size+1))
+
         self.pbar = tqdm(total=len(chunks))
         tasks = [
             run(
                 self.__download_range,
                 url,
                 start,
-                start + chunk_size - 1,
+                end,
                 f'./temp/tmp_product.part{i}',
             )
-            for i, start in enumerate(chunks)
+            for i, (start, end) in enumerate(chunks)
         ]
         await asyncio.wait(tasks)
 

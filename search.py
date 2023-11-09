@@ -93,6 +93,10 @@ def search_csv(args: Namespace):
         print("to be implemented")
         exit(1)
 
+    print("=============================")
+    print("Searching CSV...")
+    print("=============================")
+
     df = pd.read_csv(args.csv) # read csv
     pbar = tqdm(total=len(df), position=0, leave=True) # prepare progress bar
 
@@ -115,8 +119,7 @@ def search_csv(args: Namespace):
             continue
 
         # send search request 
-        result = api.search(date, lat, lon, resolution, path_number, scene_number, show_loading=False)
-
+        result = api.search(date, lat, lon, resolution, path_number, scene_number, verbose=False)
         # if results returned add to the data
         if result != None:
             result.to_dataframe(df, i)

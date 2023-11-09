@@ -152,9 +152,8 @@ class GPortalSearchResult:
                 poly = f.geometry.coordinates
                 poly = np.array(poly)
                 poly = poly.T
-                if inside_polygon(poly[0], poly[1], lon, lat) == 1:
+                if inside_polygon(poly[0], poly[1], lon, lat):
                     filtered.append(f)
-
             if len(filtered) > 1:
                 boarder_dis = []
                 point = [lat, lon]

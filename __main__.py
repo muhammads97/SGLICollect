@@ -1,5 +1,6 @@
 from args import args
 from download import download, download_csv
+from extract import extract
 from search import search, search_csv
 
 if __name__ == "__main__":
@@ -13,5 +14,8 @@ if __name__ == "__main__":
             download_csv(args)
         else:
             download(args)
-    elif args.download_csv:
-        print("wait")
+    elif args.extract:
+        if args.csv:
+            print("wait")
+        else:
+            extract(args)

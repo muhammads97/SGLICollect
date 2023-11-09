@@ -22,7 +22,7 @@ class GPortalL2RExtractor(Extractor):
         """
         # Get Rrs data
         real_prod_name = prod_name.replace('Rrs', 'NWLR')
-        data = self.__h5['Image_data/' + real_prod_name]
+        data = self._h5['Image_data/' + real_prod_name]
 
         # Validate
         rrs = data[:].astype(np.float32)
@@ -59,8 +59,8 @@ class GPortalL2RExtractor(Extractor):
     def get_pixel(self, lat:float, lon:float) -> dict:
         lat_mat, lon_mat = self.get_lat_lon()
         row, col, distance = find_entry(lat_mat, lon_mat, lat, lon)
-        print("=> matching point with distance^2 = %f" % (distance))
-        flags = self.__calculate_flags(self.__h5["Image_data/QA_flag"][row, col])
+        # print("=> matching point with distance^2 = %f" % (distance))
+        flags = self.__calculate_flags(self._h5["Image_data/QA_flag"][row, col])
         pixel = {
             "Rrs_380": self.__digital_number_to_rrs("Rrs_380")[row, col],
             "Rrs_412": self.__digital_number_to_rrs("Rrs_412")[row, col],

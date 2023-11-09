@@ -19,22 +19,22 @@ class GPortalL1BExtractor(Extractor):
         :prod_name str the desired product (Lt01 to Lt11 for radiance) or (Rt01 to Rt11 for reflectance)
         """
         # Get data
-        if prod_name.startswith("L"):
-            radiance = True
+        radiance = prod_name.startswith("L")
+        if radiance: real_prod_name = prod_name.replace('Lt', 'Lt_VN')
+        else: real_prod_name = prod_name.replace('Rt', 'Lt_VN')
 
-        if radiance: real_prod_name = prod_name.replace('Lt_VN', 'Lt')
-        else: real_prod_name = prod_name.replace('Lt_VN', 'Rt')
+        data = self._h5['Image_data/' + real_prod_name]
+        rad_or_ref = data[:]
 
-        data = self.__h5['Image_data/' + real_prod_name]
-        rad = data[:].astype(np.float32)
+        errors = np.zeros(shape=rad_or_ref.shape, dtype=np.bool8)
 
         # Validate
-        rad[rad == data.attrs['Error_DN'][0]] = np.NaN
+        errors[rad_or_ref == data.attrs['Error_DN'][0]] = True
         with np.warnings.catch_warnings():
             np.warnings.filterwarnings(
                 'ignore', r'invalid value encountered in (greater|less)')
-            rad[rad > data.attrs['Maximum_valid_DN'][0]] = np.NaN
-            rad[rad < data.attrs['Minimum_valid_DN'][0]] = np.NaN
+            errors[rad_or_ref > data.attrs['Maximum_valid_DN'][0]] = True
+            errors[rad_or_ref < data.attrs['Minimum_valid_DN'][0]] = True
 
         # Convert DN to physical value
         if radiance:
@@ -45,13 +45,13 @@ class GPortalL1BExtractor(Extractor):
             offset = data.attrs['Offset_reflectance'][0]
         mask = data.attrs['Mask']
 
-        rad = (rad&mask) * slope + offset
-        return rad
+        rad_or_ref = (rad_or_ref&mask) * slope.astype(np.float32) + offset
+        rad_or_ref[errors] = np.nan
+        return rad_or_ref
 
     def get_pixel(self, lat:float, lon:float) -> dict:
         lat_mat, lon_mat = self.get_lat_lon()
         row, col, distance = find_entry(lat_mat, lon_mat, lat, lon)
-        print("=> matching point with distance^2 = %f" % (distance))
         pixel = {
             "Lt01": self.__handle_digital_number("Lt01")[row, col],
             "Lt02": self.__handle_digital_number("Lt02")[row, col],
@@ -75,7 +75,7 @@ class GPortalL1BExtractor(Extractor):
             "Rt09": self.__handle_digital_number("Rt09")[row, col],
             "Rt10": self.__handle_digital_number("Rt10")[row, col],
             "Rt11": self.__handle_digital_number("Rt11")[row, col],
-            "land": self.__h5["Image_data"]["Land_water_flag"][:][row, col]
+            "land": self._h5["Image_data"]["Land_water_flag"][:][row, col]
         }            
         return pixel
 
