@@ -2,6 +2,7 @@ from args import args
 from download import download, download_csv
 from extract import extract
 from search import search, search_csv
+from utils import empty_temp
 
 if __name__ == "__main__":
     if args.search:
@@ -19,3 +20,5 @@ if __name__ == "__main__":
             print("wait")
         else:
             extract(args)
+
+    empty_temp()

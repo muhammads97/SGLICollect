@@ -191,8 +191,8 @@ class GportalApi:
             # set the cookie
             cookie = res.headers["Set-Cookie"].split("secure, ")[-1]
             self.headers["Cookie"] = cookie
-        elif res.status_code != 406:
-            print("auth failed!") 
+        elif res.status_code == 406:
+            print("authentication failed!") 
     
     async def __get_size(self, url:str):
         """

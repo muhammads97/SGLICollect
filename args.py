@@ -4,20 +4,16 @@ Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """
 import argparse
-import datetime
 from pathlib import Path
 import json
 from api_types import *
 from gportal import GPortalLvlProd, GPortalResolution
-import os
 
-intro = open("./help/intro.txt")
 parser = argparse.ArgumentParser(description="Welcome to SGLI-API!\n"
                                              "This API is developed for searching and downloading SGLI Images.\n" 
                                              "This API is developed by Muhammad Salah (msalah.29.10@gmail.com)\n",
                                 formatter_class=argparse.RawTextHelpFormatter
                                 )
-intro.close()
 parser.add_argument('-s', '--search', action="store_true", help='Search GPortal for products')
 parser.add_argument('-d', '--download', action="store_true", help='Download the products')
 parser.add_argument('-e', "--extract", action="store_true", help="extract the pixel matching the lat, and long from the product")
