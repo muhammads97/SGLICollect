@@ -177,8 +177,7 @@ def search_csv_grouped(args: Namespace):
 
     for i, ((lat, lon, date), g) in enumerate(grouped):
     
-        id = get_value(g.iloc[0], "identifier")
-
+        id = get_value(g.iloc[0].fillna(0).to_dict(), "identifier")
         resolution = GPortalResolution.H
 
         # progress if no repeat and id exists
