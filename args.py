@@ -45,6 +45,7 @@ parser.add_argument("--download-dir", type=Path, default=Path("./temp"), help="d
 parser.add_argument("--download-url", type=str, help="url of product to download")
 parser.add_argument("--product-path", type=Path, help="product path for extract option")
 parser.add_argument("--product-dir", type=Path, help="directory containing products to extract")
+parser.add_argument("--group", action="store_true", help="Only works with lat and lon searchs, it will group duplicated lat, lon, and date")
 args = parser.parse_args()
 
 if args.config_file:
@@ -80,7 +81,7 @@ if args.extract:
         if args.latitude == None or args.longitude == None:
             print("latitude and longitude must be provided")
             exit(1)   
-else:
+if not args.search and not args.download and not args.extract:
     print("No option provided!")
     parser.print_help()
     exit(1)

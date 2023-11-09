@@ -135,5 +135,78 @@ def search_csv(args: Namespace):
     # move to download option if download is set
     if args.download:
         download_csv(args)
+
+def search_csv_grouped(args: Namespace):
+    """
+    Bulk search operation using csv file
+    arguments provided through json file or cmdline arguments:
+        - api: GPORTAL or JASMES, default: GPORTAL
+        - level_product: L1B, L2R, or L2P
+        - csv: path to csv file
+        - no_repeat: boolean, if identifier exists will not search the corresponding row
+    CSV file columns:
+        - date
+        - lat
+        - lon
+        - identifier: optional (if no_repeat set and identifier provided the corresponding row will be skipped)
+
+    Output columns:
+        - identifier
+        - file_status
+        - resolution
+        - path_number
+        - scene_number
+        - download_url
+        - preview_url
+        - cloud_coverage (%)
+    """
+    # selecting which API
+    if args.api == SGLIAPIs.GPORTAL:
+        api = GportalApi(args.level_product)
+    else:
+        print("to be implemented")
+        exit(1)
+
+    print("=============================")
+    print("Searching CSV (grouped)...")
+    print("=============================")
+
+    df = pd.read_csv(args.csv) # read csv
+    grouped = df.groupby(["lat", "lon", "date"])
+    print(len(grouped))
+    pbar = tqdm(total=len(df), position=0, leave=True) # prepare progress bar
+
+    for i, ((lat, lon, date), g) in enumerate(grouped):
+
+        print(lat, lon, date)
+    
+        id = get_value(g.iloc[0], "identifier")
+
+        resolution = GPortalResolution.H
+
+        # progress if no repeat and id exists
+        if id and args.no_repeat: 
+            pbar.update(len(g))
+            continue
+
+        # send search request 
+        result = api.search(date, lat, lon, resolution, None, None, verbose=False)
+        # if results returned add to the data
+        if result != None:
+            print(len(g))
+            for j in range(len(g)):
+                result.to_dataframe(df, g.index[j])
+
+        pbar.update(len(g)) # update progress bar
+
+        # save to csv every 100 row
+        if (i % 100 == 0): df.to_csv(args.csv, index=False)
+
+    df.to_csv(args.csv, index=False) # save to csv
+    pbar.close()
+
+    # move to download option if download is set
+    if args.download:
+        download_csv(args)
         
 
