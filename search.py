@@ -173,12 +173,9 @@ def search_csv_grouped(args: Namespace):
 
     df = pd.read_csv(args.csv) # read csv
     grouped = df.groupby(["lat", "lon", "date"])
-    print(len(grouped))
     pbar = tqdm(total=len(df), position=0, leave=True) # prepare progress bar
 
     for i, ((lat, lon, date), g) in enumerate(grouped):
-
-        print(lat, lon, date)
     
         id = get_value(g.iloc[0], "identifier")
 
@@ -193,7 +190,6 @@ def search_csv_grouped(args: Namespace):
         result = api.search(date, lat, lon, resolution, None, None, verbose=False)
         # if results returned add to the data
         if result != None:
-            print(len(g))
             for j in range(len(g)):
                 result.to_dataframe(df, g.index[j])
 
