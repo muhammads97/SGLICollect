@@ -64,6 +64,10 @@ def extract(args:Namespace):
             - aCDOM_412 : absorption of Colored Desolved Organic Matter at wavelength 412 nm (1/m)
             - TSM       : Total Suspended Matter (g/m3)
     """
+
+    if args.product_path == None:
+        print("product_path must be set")
+        exit(1)
     # select the apropriate extractor
     # and provide the product path
     if args.api == SGLIAPIs.GPORTAL:

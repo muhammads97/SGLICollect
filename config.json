@@ -1,0 +1,13 @@
+{
+  "operations": ["search", "download", "extract"],
+  "args": {
+    "level_product": "L2R",
+    "latitude": 35.6108333,
+    "longitude": 140.023333,
+    "date": "2019/09/02",
+    "api": "GPORTAL",
+    "download_dir": "/Users/salah/",
+    "no_repeat": true,
+    "cred": "./cred.json"
+  }
+}

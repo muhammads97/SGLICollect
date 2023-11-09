@@ -58,8 +58,10 @@ class GPortalL2RExtractor(Extractor):
 
     def get_pixel(self, lat:float, lon:float) -> dict:
         lat_mat, lon_mat = self.get_lat_lon()
-        row, col, distance = find_entry(lat_mat, lon_mat, lat, lon)
-        # print("=> matching point with distance^2 = %f" % (distance))
+        row, col, _ = find_entry(lat_mat, lon_mat, lat, lon)
+        # print("=> matching point with distance^2 = %f at %d %d" % (distance, row, col))
+        # print(lat_mat[row, col], lon_mat[row, col])
+
         flags = self.__calculate_flags(self._h5["Image_data/QA_flag"][row, col])
         pixel = {
             "Rrs_380": self.__digital_number_to_rrs("Rrs_380")[row, col],

@@ -49,15 +49,22 @@ class GportalApi:
         self.dataset = DATASETS[type.value] # select product
         self.done = False # used for the loading function
 
-    def set_auth_details(self, account:str, password: str):
+    def set_auth_details(self, cred:Path):
         """
         sets the account and password for using for download functionality.
         
-        | account : str user account
-        | password: str user password
+        | cred: path to json file containing account and password
+        |       Example:
+        |       {
+        |           "account": "<YOUR_USERNAME>",
+        |           "password": "<YOUR_PASSWORD>"
+        |       }
         """
-        self.account = account
-        self.password = password
+        f = open(cred, 'r')
+        j = json.load(f)
+        f.close()
+        self.account = j["account"]
+        self.password = j["password"]
 
     def search(self, date: str, latitude: float, longitude: float, resolution: GPortalResolution, path_number: int = None, scene_number: int = None, verbose: bool = True)->GPortalResponse:
         """

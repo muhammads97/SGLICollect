@@ -38,7 +38,7 @@ def download(args: Namespace):
 
     # supply the API with the auth credentials  
     # this is only needed for download not search
-    api.set_auth_details(args.account, args.password)
+    api.set_auth_details(args.cred)
     # start the download process
     product_path = api.download(download_url, args.download_dir)
     if args.extract:

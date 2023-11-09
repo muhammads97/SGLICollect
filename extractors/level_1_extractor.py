@@ -51,7 +51,7 @@ class GPortalL1BExtractor(Extractor):
 
     def get_pixel(self, lat:float, lon:float) -> dict:
         lat_mat, lon_mat = self.get_lat_lon()
-        row, col, distance = find_entry(lat_mat, lon_mat, lat, lon)
+        row, col, _ = find_entry(lat_mat, lon_mat, lat, lon)
         pixel = {
             "Lt01": self.__handle_digital_number("Lt01")[row, col],
             "Lt02": self.__handle_digital_number("Lt02")[row, col],

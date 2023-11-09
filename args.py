@@ -40,8 +40,7 @@ parser.add_argument('-c', "--config-file", type=Path,
 parser.add_argument('--csv', nargs="?", type=Path,
                     help="a path to a json file containing the search results")
 parser.add_argument("--no-repeat", action="store_true", help="don't repeat if identifier exists")
-parser.add_argument("--account", type=str, help="account for gportal authentication")
-parser.add_argument("--password", type=str, help="password for gportal authentication")
+parser.add_argument("--cred", type=Path, help="a path to json file containing account and password\nexample: \n{\n\t\"account\": \"<YOUR_USERNAME>\", \n\t\"password\": \"<YOUR_PASSOWRD>\"\n}")
 parser.add_argument("--download-dir", type=Path, default=Path("./temp"), help="directory path of the download location")
 parser.add_argument("--download-url", type=str, help="url of product to download")
 parser.add_argument("--product-path", type=Path, help="product path for extract option")
@@ -73,11 +72,8 @@ if args.search:
             print("latitude and longitude must be provided")
             exit(1)
 if args.download:
-    if args.account == None: 
-        print("account must be provided")
-        exit(1)
-    if args.password == None:
-        print("password must be provided")
+    if args.cred == None: 
+        print("credentials must be provided via a json file")
         exit(1)
 if args.extract:
     if not args.csv:
