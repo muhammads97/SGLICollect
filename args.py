@@ -12,7 +12,11 @@ from gportal import GPortalLvlProd, GPortalResolution
 import os
 
 intro = open("./help/intro.txt")
-parser = argparse.ArgumentParser(description=intro.read())
+parser = argparse.ArgumentParser(description="Welcome to SGLI-API!\n"
+                                             "This API is developed for searching and downloading SGLI Images.\n" 
+                                             "This API is developed by Muhammad Salah (msalah.29.10@gmail.com)\n",
+                                formatter_class=argparse.RawTextHelpFormatter
+                                )
 intro.close()
 parser.add_argument('-s', '--search', action="store_true", help='Search GPortal for products')
 parser.add_argument('-d', '--download', action="store_true", help='Download the products')
@@ -39,14 +43,13 @@ parser.add_argument('-c', "--config-file", type=Path,
                     help="provide the arguments in a json file")
 parser.add_argument('--csv', nargs="?", type=Path,
                     help="a path to a json file containing the search results")
-parser.add_argument("--use-orbit", action="store_true", help="use the satellite path number and scene number instead of lat and long")
 parser.add_argument("--no-repeat", action="store_true", help="don't repeat if identifier exists")
 parser.add_argument("--account", type=str, help="account for gportal authentication")
 parser.add_argument("--password", type=str, help="password for gportal authentication")
-parser.add_argument("--download_dir", type=Path, default=Path("./temp"), help="directory path of the download location")
-parser.add_argument("--download_url", type=str, help="url of product to download")
-parser.add_argument("--product_path", type=Path, help="product path for extract option")
-parser.add_argument("--product_dir", type=Path, help="directory containing products to extract")
+parser.add_argument("--download-dir", type=Path, default=Path("./temp"), help="directory path of the download location")
+parser.add_argument("--download-url", type=str, help="url of product to download")
+parser.add_argument("--product-path", type=Path, help="product path for extract option")
+parser.add_argument("--product-dir", type=Path, help="directory containing products to extract")
 args = parser.parse_args()
 
 if args.config_file:

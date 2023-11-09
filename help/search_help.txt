@@ -1,2 +1,0 @@
-search for SGLI image and output the results in the terminal.
-takes 9 arguments
