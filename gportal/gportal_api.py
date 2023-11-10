@@ -120,9 +120,15 @@ class GportalApi:
         self.done = True 
         time.sleep(0.2)
 
+        if not res.ok:
+            return None
+
         # parse the results
-        results = json.loads(res.content)
-        results = GPortalSearchResult(results)
+        try:
+            results = json.loads(res.content)
+            results = GPortalSearchResult(results)
+        except:
+            return None
         # filter the results to get a single product the best matchs the search criteria
         return results.filter_results(longitude, latitude)
 
