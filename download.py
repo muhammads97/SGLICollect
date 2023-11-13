@@ -73,7 +73,7 @@ def download_csv(args: Namespace):
     print("=============================")
     # supply the API with the auth credentials  
     # this is only needed for download not search
-    api.set_auth_details(args.account, args.password)
+    api.set_auth_details(args.cred)
 
     df = pd.read_csv(args.csv) # read csv
     df =df.groupby("download_url") # only download uniqe urls

@@ -230,7 +230,11 @@ class GportalApi:
         """download the file by dividing it into chucks of 1mb and calling a thread for each chunck"""
         file_name = url.split("/")[-1]
         print("downloading file:", file_name, "into:", output_dir.absolute())
-        file_size = await self.__get_size(url)
+        try:
+            file_size = await self.__get_size(url)
+        except:
+            print("failed to get size")
+            return
         output_file = Path(os.path.join(output_dir, file_name))
 
         # don't download if file already exists
