@@ -7,6 +7,7 @@ import requests
 import json
 import numpy as np
 from enum import Enum
+
 from .gportal_response import GPortalResponse, GPortalSearchResult
 from .gportal_types import GPortalResolution
 import sys
@@ -19,7 +20,6 @@ import os
 import concurrent.futures
 import functools
 from pathlib import Path
-import glob
 
 DATASETS = {
     "L1B": "10001003",
@@ -155,7 +155,7 @@ class GportalApi:
         # run the download in multithreading
         try:
             loop.run_until_complete(
-                self.__download(run, url, output_dir)
+                self.__download(run, url, output_dir, chunk_size=10000000)
             )
         finally:
             loop.close()
@@ -198,8 +198,11 @@ class GportalApi:
         "password": self.password,
         "fuel_csrf_token": self.token
         } 
+        headers = {
+            "Cookie": "fuel_csrf_token=%s" % self.token
+        }
 
-        res = requests.post(auth_url, body, headers = self.headers)
+        res = requests.post(auth_url, body, headers = headers)
         if res.ok:
             # set the cookie
             cookie = res.headers["Set-Cookie"].split("secure, ")[-1]
@@ -211,7 +214,7 @@ class GportalApi:
         """
         returns the size of the file to be downloaded
         """
-        response = requests.head(url, headers=self.headers)
+        response = requests.head(url, headers=self.headers, stream=True)
         size = int(response.headers['Content-Length'])
         return size
 
@@ -219,7 +222,7 @@ class GportalApi:
         """downloads a sequence of bytes from start to end."""
         headers = {'Range': f'bytes={start}-{end}'}
         headers.update(self.headers)
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, stream=True)
 
         with open(output_path, 'wb') as f:
             for part in response.iter_content(1024):
