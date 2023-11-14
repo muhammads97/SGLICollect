@@ -1,6 +1,6 @@
 from args import args
 from download import download, download_csv
-from extract import extract
+from extract import extract, extract_csv
 from search import search, search_csv, search_csv_grouped
 from utils import empty_temp
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
             download(args)
     elif args.extract:
         if args.csv:
-            print("wait")
+            extract_csv(args)
         else:
             extract(args)
 
