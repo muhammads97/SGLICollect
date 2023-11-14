@@ -155,7 +155,7 @@ class GportalApi:
         # run the download in multithreading
         try:
             loop.run_until_complete(
-                self.__download(run, url, output_dir)
+                self.__download(run, url, output_dir, chunk_size=10000000)
             )
         finally:
             loop.close()
