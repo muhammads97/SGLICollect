@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 import json
 from api_types import *
-from gportal import GPortalLvlProd, GPortalResolution
+from gportal import GPortalResolution
 
 parser = argparse.ArgumentParser(description="Welcome to SGLI-API!\n"
                                              "This API is developed for searching and downloading SGLI Images.\n" 
@@ -22,7 +22,7 @@ parser.add_argument("--date", nargs="?",
                     help="sample date format: yyyy/mm/dd", type=str)
 parser.add_argument('-lp', "--level-product", nargs="?",
                     help="'L1B' for level 1, 'L2R' for level 2 NWLR (Rrs), or 'L2P' for level 2 IWLR (Chla, etc)",
-                    type=GPortalLvlProd, default=GPortalLvlProd.L1B)
+                    type=str, default="L1B")
 parser.add_argument('-lat', "--latitude", nargs="?",
                     help="Latitude", type=float)
 parser.add_argument('-lon', "--longitude", nargs="?",
@@ -43,6 +43,7 @@ parser.add_argument("--no-repeat", action="store_true", help="don't repeat if id
 parser.add_argument("--cred", type=Path, help="a path to json file containing account and password\nexample: \n{\n\t\"account\": \"<YOUR_USERNAME>\", \n\t\"password\": \"<YOUR_PASSOWRD>\"\n}")
 parser.add_argument("--download-dir", type=Path, default=Path("./temp"), help="directory path of the download location")
 parser.add_argument("--download-url", type=str, help="url of product to download")
+parser.add_argument("--ftp-path", type=str, help="path of product to download on the ftp server")
 parser.add_argument("--product-path", type=Path, help="product path for extract option")
 parser.add_argument("--product-dir", type=Path, help="directory containing products to extract")
 parser.add_argument("--group", action="store_true", help="Only works with lat and lon searchs, it will group duplicated lat, lon, and date")
@@ -60,9 +61,9 @@ if args.config_file:
         else:
             setattr(args, k, config["args"][k])
 
-if args.api == SGLIAPIs.JASMES:
-    print("JASMES API is still under construction.")
-    exit(1)
+# if args.api == SGLIAPIs.JASMES:
+#     print("JASMES API is still under construction.")
+#     exit(1)
 
 if args.search:
     if not args.csv:

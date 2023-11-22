@@ -11,8 +11,9 @@ import numpy as np
 from tqdm import tqdm
 
 from api_types import SGLIAPIs
-from extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor
+from extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor, JASMESExtractor
 from gportal import GPortalLvlProd
+from jasmes import JASMESProd
 
 
 def extract(args:Namespace):
@@ -81,8 +82,8 @@ def extract(args:Namespace):
             print("level or product not supported yet")
             exit(1)
     else:
-        print("to be implemented")
-        exit(1)
+        pl = JASMESProd(args.level_product)
+        extractor = JASMESExtractor(args.product_path, pl)
 
     # get pixel information
     pixel = extractor.get_pixel(args.latitude, args.longitude)
@@ -144,6 +145,7 @@ def extract_csv(args:Namespace):
     """
     # select the apropriate extractor as a class 
     if args.api == SGLIAPIs.GPORTAL:
+        group_key = "identifier"
         if args.level_product == GPortalLvlProd.L1B:
             Extractor = GPortalL1BExtractor
         elif args.level_product == GPortalLvlProd.L2R:
@@ -153,6 +155,9 @@ def extract_csv(args:Namespace):
         else:
             print("level or product not supported yet")
             exit(1)
+    elif args.api == SGLIAPIs.JASMES:
+        group_key = "file_name"
+        Extractor = JASMESExtractor
     else:
         print("to be implemented")
         exit(1)
@@ -170,20 +175,23 @@ def extract_csv(args:Namespace):
     df = pd.read_csv(args.csv)
 
     # filter for records that contain an identifier
-    filtered = df[df["identifier"].str.len() == 41]
+    filtered = df[df[group_key].str.len() >= 41]
     # filter for records that contain both lat and lon
     filtered = filtered[~np.isnan(filtered[["lat", "lon"]]).any(axis=1)]
     # define the progress bar
-    pbar = tqdm(filtered["identifier"], position=0, leave=True)
+    pbar = tqdm(filtered[group_key], position=0, leave=True)
     # group by identifier to open the product only once
-    grouped = filtered.groupby("identifier")
-
+    grouped = filtered.groupby(group_key)
     for i, (id, group) in enumerate(grouped):
         # make the product path by joining the product name and the product directory
         prod_path = os.path.join(args.product_dir, Extractor.make_file_name(id))
         try:
             # try to open the product (may fail if file is corrupt)
-            extractor = Extractor(prod_path)
+            if args.api == SGLIAPIs.GPORTAL:
+                extractor = Extractor(prod_path)
+            elif args.api == SGLIAPIs.JASMES:
+                pl = JASMESProd(args.level_product)
+                extractor = Extractor(prod_path, pl)
         except:
             # move to next product if failed to open the product
             pbar.update(len(group))
@@ -194,7 +202,6 @@ def extract_csv(args:Namespace):
             lat, lon = float(group.iloc[r]["lat"]), float(group.iloc[r]["lon"])
             # extract pixel values
             pixel = extractor.get_pixel(lat, lon)
-
             # add the pixel to the df
             for k in pixel.keys():
                 df.loc[group.index[r], k] = pixel[k]
