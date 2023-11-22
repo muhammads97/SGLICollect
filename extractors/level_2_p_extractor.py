@@ -23,7 +23,7 @@ class GPortalL2PExtractor(Extractor):
         :prod_name str the desired product (Lt01 to Lt11 for radiance) or (Rt01 to Rt11 for reflectance)
         """
         # Get product data
-        real_prod_name = prod_name.capitalize()
+        real_prod_name = prod_name.upper()
         data = self._h5['Image_data/' + real_prod_name]
 
         # Validate
