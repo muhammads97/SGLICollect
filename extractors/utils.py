@@ -1,3 +1,7 @@
+"""
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 import numpy as np
 
 def distance_sqr(lat:float, lat_mat:np.ndarray[float, float], lon:float, lon_mat:np.ndarray[float, float])->np.ndarray[float, float]:

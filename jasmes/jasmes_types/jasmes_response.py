@@ -1,3 +1,8 @@
+"""
+JASMES Product Object
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 from ftplib import FTP
 
 import pandas as pd

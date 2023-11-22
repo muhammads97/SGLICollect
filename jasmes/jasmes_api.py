@@ -1,3 +1,8 @@
+"""
+SGLI Near Real Time FTP API (JASMES)
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 from datetime import datetime
 from enum import Enum
 import json

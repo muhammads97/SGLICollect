@@ -1,4 +1,5 @@
 """
+This module is responsible of extracting the pixels out of SGLI products
 Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """

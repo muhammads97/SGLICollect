@@ -1,3 +1,7 @@
+"""
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 from api_types import SGLIAPIs
 from args import args
 from download import download, download_csv

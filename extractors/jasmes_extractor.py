@@ -1,5 +1,5 @@
 """
-This module provide interface for extracting the pixel value out of an SGLI product using lat and long
+This module provide interface for extracting the pixel value out of an SGLI product using lat and long JASMES Format
 Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """
