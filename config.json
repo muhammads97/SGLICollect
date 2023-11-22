@@ -1,14 +1,15 @@
 {
-  "operations": ["search"],
+  "operations": ["extract"],
   "args": {
-    "level_product": "L2R",
-    "latitude": 37.5,
-    "longitude": 141.5,
-    "product_path": "/Users/salah/workspace/SGLI-API/temp/GC1SG1_202210290115R04510_1BSG_VNRDQ_2006.h5",
-    "api": "GPORTAL",
-    "csv": "./temp_temp/test2.csv",
+    "level_product": "NWLR_412",
+    "latitude": 44.853750035714505,
+    "longitude": 138.32875040812206,
+    "date": "2023/11/21",
+    "csv": "/Users/salah/workspace/SGLI-API/temp_temp/test2.csv",
+    "api": "JASMES",
+    "product_dir": "/Users/salah/workspace/SGLI-API/temp_temp/",
     "group": true,
-    "no_repeat": true,
+    "no_repeat": false,
     "cred": "./cred.json"
   }
 }

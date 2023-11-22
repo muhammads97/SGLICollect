@@ -6,13 +6,16 @@ Email: msalah.29.10@gmail.com
 
 from argparse import Namespace
 from api_types import *
-from download import download, download_csv
+from download import download, download_csv_gportal, download_csv_jasmes
 from gportal import GportalApi
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+from gportal import GPortalLvlProd
 
-from gportal.gportal_types.gportal_resolution import GPortalResolution
+from gportal import GPortalResolution
+from jasmes import JasmesApi
+from jasmes import JASMESProd
 
 """
 Utility function to get the value from a dict and validate it
@@ -51,14 +54,22 @@ def search(args: Namespace):
     """
     # selecting which API
     if args.api == SGLIAPIs.GPORTAL:
-        api = GportalApi(args.level_product)
-    else:
-        print("to be implemented")
+        pl = GPortalLvlProd(args.level_product)
+        api = GportalApi(pl)
+        # send search request
+        result = api.search(args.date, args.latitude, args.longitude,
+                        args.resolution, args.path_number, args.scene_number)
+    elif args.api == SGLIAPIs.JASMES:
+        pl = JASMESProd(args.level_product)
+        api = JasmesApi(pl)
+        # send search request
+        api.set_auth_details(args.cred)
+        result = api.search(args.date, args.latitude, args.longitude)
+    else: 
+        print("API name is not recognized")
         exit(1)
 
-    # send search request
-    result = api.search(args.date, args.latitude, args.longitude,
-                        args.resolution, args.path_number, args.scene_number)
+    
     
     # print results
     print("returned results: ")
@@ -66,11 +77,14 @@ def search(args: Namespace):
 
     # if download option is set set the download url and call the download function
     if args.download:
-        setattr(args, "download_url", result.properties.product.downloadUrl.geturl())
+        if args.api == SGLIAPIs.GPORTAL:
+            setattr(args, "download_url", result.properties.product.downloadUrl.geturl())
+        elif args.api == SGLIAPIs.JASMES:
+            setattr(args, "ftp_path", result.filePath)
         download(args)
 
 
-def search_csv(args: Namespace):
+def search_csv_gportal(args: Namespace):
     """
     Bulk search operation using csv file
     arguments provided through json file or cmdline arguments:
@@ -97,12 +111,8 @@ def search_csv(args: Namespace):
         - preview_url
         - cloud_coverage (%)
     """
-    # selecting which API
-    if args.api == SGLIAPIs.GPORTAL:
-        api = GportalApi(args.level_product)
-    else:
-        print("to be implemented")
-        exit(1)
+    pl = GPortalLvlProd(args.level_product)
+    api = GportalApi(pl)
 
     print("=============================")
     print("Searching CSV...")
@@ -145,9 +155,9 @@ def search_csv(args: Namespace):
 
     # move to download option if download is set
     if args.download:
-        download_csv(args)
+        download_csv_gportal(args)
 
-def search_csv_grouped(args: Namespace):
+def search_csv_grouped_gportal(args: Namespace):
     """
     Bulk search operation using csv file
     arguments provided through json file or cmdline arguments:
@@ -171,12 +181,8 @@ def search_csv_grouped(args: Namespace):
         - preview_url
         - cloud_coverage (%)
     """
-    # selecting which API
-    if args.api == SGLIAPIs.GPORTAL:
-        api = GportalApi(args.level_product)
-    else:
-        print("to be implemented")
-        exit(1)
+    pl = GPortalLvlProd(args.level_product)
+    api = GportalApi(pl)
 
     print("=============================")
     print("Searching CSV (grouped)...")
@@ -214,6 +220,64 @@ def search_csv_grouped(args: Namespace):
 
     # move to download option if download is set
     if args.download:
-        download_csv(args)
+        download_csv_gportal(args)
         
 
+def search_csv_jasmes(args: Namespace):
+    """
+    Bulk search operation using csv file for JASMES API
+    arguments provided through json file or cmdline arguments:
+        - level_product: NWLR_380, NWLR_412, NWLR_443, NWLR_490, NWLR_530, NWLR_565, NWLR_670, PAR, TAUA_670, TAUA_865, FAI, CDOM, CHLA, TSM, SST, Cloud_probability
+        - csv: path to csv file
+        - no_repeat: boolean, if identifier exists will not search the corresponding row
+    CSV file columns:
+        - date
+        - lat
+        - lon
+        - file_name: optional (if no_repeat set and filename provided the corresponding row will be skipped)
+
+    Output columns:
+        - file_name
+        - file_path
+        - file_size
+        - box_id
+    """
+    pl = JASMESProd(args.level_product)
+    api = JasmesApi(pl)
+    api.set_auth_details(args.cred)
+    print("=============================")
+    print("Searching CSV...")
+    print("=============================")
+
+    df = pd.read_csv(args.csv) # read csv
+    grouped = df.groupby(["lat", "lon", "date"])
+    pbar = tqdm(total=len(df), position=0, leave=True) # prepare progress bar
+
+    for i, ((lat, lon, date), g) in enumerate(grouped):
+    
+        fn = get_value(g.iloc[0].fillna(0).to_dict(), "file_name")
+
+        # progress if no repeat and id exists
+        if fn and args.no_repeat: 
+            fill_group(df, g)
+            pbar.update(len(g))
+            continue
+
+        # send search request 
+        result = api.search(date, lat, lon, verbose=False)
+        # if results returned add to the data
+        if result != None:
+            for j in range(len(g)):
+                result.to_dataframe(df, g.index[j])
+
+        pbar.update(len(g)) # update progress bar
+
+        # save to csv every 100 row
+        if (i % 100 == 0): df.to_csv(args.csv, index=False)
+
+    df.to_csv(args.csv, index=False) # save to csv
+    pbar.close()
+
+    # move to download option if download is set
+    if args.download:
+        download_csv_jasmes(args)

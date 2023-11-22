@@ -5,9 +5,8 @@ Email: msalah.29.10@gmail.com
 """
 import numpy as np
 from .gportal_types import GPortalProperties, GPortalGeo
-from .utils import inside_polygon, min_distance
+from utils import inside_polygon, min_distance
 from pathlib import Path
-import json
 import pandas as pd
 
 OUTPUT_COLUMNS = [
