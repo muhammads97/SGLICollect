@@ -1,3 +1,8 @@
+"""
+COORDINATES for JASMES Boxes
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 COORDINATES = [
     [[50.0, 115.0], [50.0, 125.0], [60.0, 125.0],[60.0, 115.0], [50.0, 115.0]],
     [[50.0, 125.0], [50.0, 135.0], [60.0, 135.0],[60.0, 125.0], [50.0, 125.0]],

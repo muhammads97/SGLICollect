@@ -20,19 +20,15 @@ parser.add_argument('-e', "--extract", action="store_true", help="extract the pi
 
 parser.add_argument("--date", nargs="?",
                     help="sample date format: yyyy/mm/dd", type=str)
-parser.add_argument('-lp', "--level-product", nargs="?",
+parser.add_argument('-p', "--product", nargs="?",
                     help="'L1B' for level 1, 'L2R' for level 2 NWLR (Rrs), or 'L2P' for level 2 IWLR (Chla, etc)",
                     type=str, default="L1B")
 parser.add_argument('-lat', "--latitude", nargs="?",
                     help="Latitude", type=float)
 parser.add_argument('-lon', "--longitude", nargs="?",
                     help="Longitude", type=float)
-parser.add_argument('-pn', "--path-number", nargs="?",
-                    type=int, help="Satellite path number from 0 to 485")
-parser.add_argument('-sn', "--scene-number", nargs="?",
-                    type=int, help="satellite scene number from 0 to 99")
 parser.add_argument('-r', "--resolution", nargs="?", type=GPortalResolution,
-                    default=GPortalResolution.H, help="resolution (250m or 1000m)")
+                    default=GPortalResolution.H, help="resolution for GPortal (250m or 1000m)")
 parser.add_argument('--api', nargs="?", type=SGLIAPIs, default=SGLIAPIs.GPORTAL,
                     help="API: GPORTAL or JASMES (Not implemented yet)")
 parser.add_argument('-c', "--config-file", type=Path,
@@ -46,7 +42,6 @@ parser.add_argument("--download-url", type=str, help="url of product to download
 parser.add_argument("--ftp-path", type=str, help="path of product to download on the ftp server")
 parser.add_argument("--product-path", type=Path, help="product path for extract option")
 parser.add_argument("--product-dir", type=Path, help="directory containing products to extract")
-parser.add_argument("--group", action="store_true", help="Only works with lat and lon searchs, it will group duplicated lat, lon, and date")
 args = parser.parse_args()
 
 if args.config_file:
@@ -61,10 +56,6 @@ if args.config_file:
         else:
             setattr(args, k, config["args"][k])
 
-# if args.api == SGLIAPIs.JASMES:
-#     print("JASMES API is still under construction.")
-#     exit(1)
-
 if args.search:
     if not args.csv:
         if args.date == None:
@@ -73,10 +64,9 @@ if args.search:
         if args.latitude == None or args.longitude == None:
             print("latitude and longitude must be provided")
             exit(1)
-if args.download:
-    if args.cred == None: 
-        print("credentials must be provided via a json file")
-        exit(1)
+if args.cred == None: 
+    print("credentials must be provided via a json file")
+    exit(1)
 if args.extract:
     if not args.csv:
         if args.latitude == None or args.longitude == None:

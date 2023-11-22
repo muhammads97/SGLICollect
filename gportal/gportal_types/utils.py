@@ -1,3 +1,7 @@
+"""
+Author: Muhammad Salah
+Email: msalah.29.10@gmail.com
+"""
 def int_or_none(s:str):
     try:
         return int(s)

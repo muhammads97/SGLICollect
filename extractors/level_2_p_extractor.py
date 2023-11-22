@@ -7,6 +7,7 @@ Email: msalah.29.10@gmail.com
 from .extractor_interface import Extractor
 from .utils import find_entry
 import numpy as np
+import warnings
 
 
 
@@ -30,8 +31,8 @@ class GPortalL2PExtractor(Extractor):
         prod = data[:].astype(np.float32)
         if 'Error_DN' in data.attrs:
             prod[prod == data.attrs['Error_DN'][0]] = np.NaN
-        with np.warnings.catch_warnings():
-            np.warnings.filterwarnings(
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
                 'ignore', r'invalid value encountered in (greater|less)')
             if 'Maximum_valid_DN' in data.attrs:
                 prod[prod > data.attrs['Maximum_valid_DN'][0]] = np.NaN

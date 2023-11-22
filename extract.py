@@ -1,4 +1,5 @@
 """
+This module is responsible of extracting the pixels out of SGLI products
 Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """
@@ -22,7 +23,7 @@ def extract(args:Namespace):
 
     arguments provided through json file or cmdline arguments:
         - api: GPORTAL or JASMES, default: GPORTAL
-        - level_product: L1B, L2R, or L2P
+        - product: L1B, L2R, or L2P
         - product_path: Path to the product to extract from
         - latitude
         - longitude
@@ -72,17 +73,17 @@ def extract(args:Namespace):
     # select the apropriate extractor
     # and provide the product path
     if args.api == SGLIAPIs.GPORTAL:
-        if args.level_product == GPortalLvlProd.L1B:
+        if args.product == GPortalLvlProd.L1B:
             extractor = GPortalL1BExtractor(args.product_path)
-        elif args.level_product == GPortalLvlProd.L2R:
+        elif args.product == GPortalLvlProd.L2R:
             extractor = GPortalL2RExtractor(args.product_path)
-        elif args.level_product == GPortalLvlProd.L2P:
+        elif args.product == GPortalLvlProd.L2P:
             extractor = GPortalL2PExtractor(args.product_path)
         else:
             print("level or product not supported yet")
             exit(1)
     else:
-        pl = JASMESProd(args.level_product)
+        pl = JASMESProd(args.product)
         extractor = JASMESExtractor(args.product_path, pl)
 
     # get pixel information
@@ -97,7 +98,7 @@ def extract_csv(args:Namespace):
     Bulk extract operation using csv file
     arguments provided through json file or cmdline arguments:
         - api: GPORTAL or JASMES, default: GPORTAL
-        - level_product: L1B, L2R, or L2P
+        - product: L1B, L2R, or L2P
         - csv: path to csv file
     CSV file columns:
         - identifier: product identifier
@@ -146,11 +147,12 @@ def extract_csv(args:Namespace):
     # select the apropriate extractor as a class 
     if args.api == SGLIAPIs.GPORTAL:
         group_key = "identifier"
-        if args.level_product == GPortalLvlProd.L1B:
+        p = GPortalLvlProd(args.product)
+        if p == GPortalLvlProd.L1B:
             Extractor = GPortalL1BExtractor
-        elif args.level_product == GPortalLvlProd.L2R:
+        elif p == GPortalLvlProd.L2R:
             Extractor = GPortalL2RExtractor
-        elif args.level_product == GPortalLvlProd.L2P:
+        elif p == GPortalLvlProd.L2P:
             Extractor = GPortalL2PExtractor
         else:
             print("level or product not supported yet")
@@ -190,7 +192,7 @@ def extract_csv(args:Namespace):
             if args.api == SGLIAPIs.GPORTAL:
                 extractor = Extractor(prod_path)
             elif args.api == SGLIAPIs.JASMES:
-                pl = JASMESProd(args.level_product)
+                pl = JASMESProd(args.product)
                 extractor = Extractor(prod_path, pl)
         except:
             # move to next product if failed to open the product
@@ -214,6 +216,9 @@ def extract_csv(args:Namespace):
 
     # finally, close the progress bar and save to the csv
     pbar.close()
+    for c in df.columns:
+        if c.startswith("Unnamed"):
+            df.drop(columns=c, inplace=True)
     df.to_csv(args.csv)
 
 
