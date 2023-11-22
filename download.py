@@ -19,7 +19,7 @@ def download(args: Namespace):
     Download a single product into a specified download directory
     arguments provided through json file or cmdline arguments:
         - api: GPORTAL or JASMES, default: GPORTAL
-        - level_product: L1B, L2R, or L2P
+        - - product: GPortal Products or Jasmes Products
         - download_url: url of the product
         - download_dir: directory to download the file
         - cred: path to json file containing account and password
@@ -32,7 +32,7 @@ def download(args: Namespace):
     """
     # selecting which API
     if args.api == SGLIAPIs.GPORTAL:
-        pl = GPortalLvlProd(args.level_product)
+        pl = GPortalLvlProd(args.product)
         api = GportalApi(pl)
         # for single file download the url must be provided directly on arguments
         if args.download_url == None: 
@@ -45,7 +45,7 @@ def download(args: Namespace):
         # start the download process
         product_path = api.download(download_url, args.download_dir)
     elif args.api == SGLIAPIs.JASMES:
-        pl = JASMESProd(args.level_product)
+        pl = JASMESProd(args.product)
         api = JasmesApi(pl)
         # for single file download the url must be provided directly on arguments
         if args.ftp_path == None: 
@@ -67,11 +67,11 @@ def download(args: Namespace):
 
 
 
-def download_csv_gportal(args: Namespace):
+def download_csv(args: Namespace):
     """
     Bulk download operation using csv file for GPORTAL
     arguments provided through json file or cmdline arguments:
-        - level_product: L1B, L2R, or L2P
+        - product: GPortal Products or Jasmes Products
         - download_url: url of the product
         - download_dir: directory to download the file
         - cred: path to json file containing account and password
@@ -81,10 +81,16 @@ def download_csv_gportal(args: Namespace):
         |           "password": "<YOUR_PASSWORD>"
         |       }
     CSV file columns:
-        - download_url
+        - download_url/ftp_path
     """
-    pl = GPortalLvlProd(args.level_product)
-    api = GportalApi(pl)
+    if args.api == SGLIAPIs.GPORTAL:
+        pl = GPortalLvlProd(args.product)
+        api = GportalApi(pl)
+        group_key = "download_url"
+    elif args.api == SGLIAPIs.JASMES:
+        pl = JASMESProd(args.product)
+        api = JasmesApi(pl)
+        group_key = "ftp_path"
     
     print("=============================")
     print("Downloading files...")
@@ -94,54 +100,13 @@ def download_csv_gportal(args: Namespace):
     api.set_auth_details(args.cred)
 
     df = pd.read_csv(args.csv) # read csv
-    df =df.groupby("download_url") # only download uniqe urls
+    df =df.groupby(group_key) # only download uniqe urls
 
     for i, (url, _) in enumerate(df):
         print(f"> {i+1}/{len(df)}", end=": ") # progress indicator 
         # start the download of the i's url
         api.download(url, args.download_dir)
 
-    
     if args.extract:
         setattr(args, "product_dir", args.download_dir)
         extract_csv(args)
-
-def download_csv_jasmes(args: Namespace):
-    """
-    Bulk download operation using csv file for JASMES
-    arguments provided through json file or cmdline arguments:
-        - level_product: NWLR_380, NWLR_412, NWLR_443, NWLR_490, NWLR_530, NWLR_565, NWLR_670, PAR, TAUA_670, TAUA_865, FAI, CDOM, CHLA, TSM, SST, Cloud_probability
-        - csv: path to csv file
-        - download_dir: directory to download the file
-        - cred: path to json file containing account and password
-        |       Example:
-        |       {
-        |           "account": "<YOUR_USERNAME>",
-        |           "password": "<YOUR_PASSWORD>"
-        |       }
-    CSV file columns:
-        - ftp_path
-    """
-    
-    print("=============================")
-    print("Downloading files...")
-    print("=============================")
-    pl = JASMESProd(args.level_product)
-    api = JasmesApi(pl)
-    # supply the API with the auth credentials  
-    api.set_auth_details(args.cred)
-
-    df = pd.read_csv(args.csv) # read csv
-    df =df.groupby("ftp_path") # only download uniqe urls
-
-    for i, (ftp_path, _) in enumerate(df):
-        print(f"> {i+1}/{len(df)}", end=": ") # progress indicator 
-        # start the download of the i's url
-        api.download(ftp_path, args.download_dir)
-
-    
-    if args.extract:
-        setattr(args, "product_dir", args.download_dir)
-        extract_csv(args)
-
-    

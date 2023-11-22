@@ -1,15 +1,14 @@
 {
-  "operations": ["extract"],
+  "operations": ["search", "download", "extract"],
   "args": {
-    "level_product": "NWLR_412",
+    "product": "L2P",
     "latitude": 44.853750035714505,
     "longitude": 138.32875040812206,
     "date": "2023/11/21",
     "csv": "/Users/salah/workspace/SGLI-API/temp_temp/test2.csv",
-    "api": "JASMES",
+    "api": "GPORTAL",
     "product_dir": "/Users/salah/workspace/SGLI-API/temp_temp/",
-    "group": true,
-    "no_repeat": false,
+    "no_repeat": true,
     "cred": "./cred.json"
   }
 }

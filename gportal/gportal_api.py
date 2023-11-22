@@ -66,7 +66,7 @@ class GportalApi:
         self.account = j["account"]
         self.password = j["password"]
 
-    def search(self, date: str, latitude: float, longitude: float, resolution: GPortalResolution, path_number: int = None, scene_number: int = None, verbose: bool = True)->GPortalResponse:
+    def search(self, date: str, latitude: float, longitude: float, resolution: GPortalResolution, verbose: bool = True)->GPortalResponse:
         """
         Searchs GPortal for a single product with a specific searc criteria.
 
@@ -74,13 +74,8 @@ class GportalApi:
         | latitude    : None or float
         | longitude   : None or float
         | resolution  : GPortalResolution (250m or 1km)
-        | path_number : integer value of the satellite path number (optional)
-        | scene_number: integer value of the satellite scene number (optional)
         | verbose     : boolean 
-
-        Note: if path_number and scene_number are set, the latitude and longitude will be ignored.
         """
-
         # construct initial request body
         body = {
             "dataset[0][id]": self.dataset,
@@ -88,21 +83,11 @@ class GportalApi:
             "obsdate[0][to]": date,
             "mapProjection": "EQ",
             "count": "1000",
+            "coordinates": self.__construct_polygon_coordinates(longitude, latitude),
             "dataset[0][Resolution][op]": "=",
             "dataset[0][Resolution][value][]": resolution.value,
             "fuel_csrf_token": self.token
         }
-
-        # add additional parameters
-        if path_number:
-            body["dataset[0][OrbitNumber][op]"] = "="
-            body["dataset[0][OrbitNumber][value]"] = str(path_number).zfill(3)
-        if scene_number:
-            body["dataset[0][sceneNumber][op]"] = "="
-            body["dataset[0][sceneNumber][value]"] = str(scene_number).zfill(2)
-        if latitude != None and longitude != None:
-            # build a square polygon around the latitude and longitude
-            body["coordinates"] = self.__construct_polygon_coordinates(longitude, latitude),
         if verbose:
             # show the loading message in a separate thread and wait until search is done
             t = threading.Thread(target=self.__show_loading_msg, args=["Talking to GPortal"])

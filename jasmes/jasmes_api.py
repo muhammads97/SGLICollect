@@ -61,7 +61,7 @@ class JasmesApi:
         self.account = j["account"]
         self.password = j["password"]
 
-    def search(self, date: str, latitude: float, longitude: float, verbose: bool = True):
+    def search(self, date: str, latitude: float, longitude: float, resolution=None, verbose: bool = True):
         """
         Searchs GPortal for a single product with a specific searc criteria.
 
