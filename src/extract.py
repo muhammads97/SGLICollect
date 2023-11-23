@@ -11,10 +11,10 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 
-from api_types import SGLIAPIs
-from extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor, JASMESExtractor
-from gportal import GPortalLvlProd
-from jasmes import JASMESProd
+from src.extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor, JASMESExtractor
+from src.jasmes import JASMESProd
+from src.gportal import GPortalLvlProd
+from src.api_types import SGLIAPIs
 
 
 def extract(args:Namespace):

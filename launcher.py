@@ -2,7 +2,8 @@
 Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """
-from src import *
+from src import args
+from src import download, download_csv, search, search_csv, extract, extract_csv, empty_temp
 
 if __name__ == "__main__":
     if args.search:

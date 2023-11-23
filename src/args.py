@@ -6,10 +6,10 @@ Email: msalah.29.10@gmail.com
 import argparse
 from pathlib import Path
 import json
-from api_types import *
-from gportal import GPortalResolution
+from src.api_types import *
+from src.gportal import GPortalResolution
 
-parser = argparse.ArgumentParser(description="Welcome to SGLI-API!\n"
+parser = argparse.ArgumentParser(description="Welcome to SGLICollect!\n"
                                              "This API is developed for searching and downloading SGLI Images.\n" 
                                              "This API is developed by Muhammad Salah (msalah.29.10@gmail.com)\n",
                                 formatter_class=argparse.RawTextHelpFormatter

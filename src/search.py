@@ -5,17 +5,14 @@ Email: msalah.29.10@gmail.com
 """
 
 from argparse import Namespace
-from api_types import *
-from download import download, download_csv
-from gportal import GportalApi
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
-from gportal import GPortalLvlProd
-
-from gportal import GPortalResolution
-from jasmes import JasmesApi
-from jasmes import JASMESProd
+from src import download, download_csv
+from src.jasmes import JASMESProd
+from src.api_types import SGLIAPIs
+from src.gportal import GportalApi, GPortalLvlProd, GPortalResolution
+from src.jasmes import JasmesApi
 
 """
 Utility function to get the value from a dict and validate it

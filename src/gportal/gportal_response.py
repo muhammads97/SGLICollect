@@ -4,8 +4,8 @@ Author: Muhammad Salah
 Email: msalah.29.10@gmail.com
 """
 import numpy as np
-from .gportal_types import GPortalProperties, GPortalGeo
-from utils import inside_polygon, min_distance
+from src.gportal.gportal_types import GPortalProperties, GPortalGeo
+from src.utils import inside_polygon, min_distance
 from pathlib import Path
 import pandas as pd
 

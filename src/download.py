@@ -6,13 +6,11 @@ Email: msalah.29.10@gmail.com
 
 from argparse import Namespace
 
-from api_types import SGLIAPIs
-from extract import extract, extract_csv
-from gportal import GPortalLvlProd, GportalApi
+from src.api_types import SGLIAPIs
+from src.gportal import GPortalLvlProd, GportalApi
+from src.jasmes import JasmesApi, JASMESProd
+from src.extract import extract, extract_csv
 import pandas as pd
-
-from jasmes import JasmesApi, JASMESProd
-
 
 def download(args: Namespace):
     """

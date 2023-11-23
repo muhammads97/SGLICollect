@@ -12,9 +12,8 @@ from ftplib import FTP
 
 import numpy as np
 from tqdm import tqdm
-from .jasmes_types import JASMESResponse
-from utils import inside_polygon
-from .jasmes_cooredinates import COORDINATES
+from src.jasmes.jasmes_types import JASMESResponse
+from src.jasmes.jasmes_cooredinates import COORDINATES
 
 
 class JASMESProd(Enum):

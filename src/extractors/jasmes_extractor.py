@@ -5,9 +5,8 @@ Email: msalah.29.10@gmail.com
 """
 
 from pathlib import Path
-from jasmes import JASMESProd
-from .extractor_interface import Extractor
-from .utils import find_entry
+from src.jasmes import JASMESProd
+from src.extractors.extractor_interface import Extractor
 import numpy as np
 from netCDF4 import Dataset
 import warnings
