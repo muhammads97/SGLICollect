@@ -1,8 +1,13 @@
-"""
-This module provide search functionality for a single instance or for a bulk search operation via csv file.
-Author: Muhammad Salah
-Email: msalah.29.10@gmail.com
-"""
+#
+# Copyright (c) 2023 Muhammad Salah msalah.29.10@gmail.com
+# Licensed under AGPL-3.0-or-later.
+# Refer to COPYING.txt for the AGPL license.
+# All rights reserved.
+# This project is developed as part of my research in the Remote Sensing Laboratory
+# in Kyoto University of Advanced Science towards my Master's Degree course.
+# The research was mainly supervised by Professor Salem Ibrahim Salem.
+#
+
 
 from argparse import Namespace
 import pandas as pd
@@ -13,6 +18,7 @@ from src.jasmes import JASMESProd
 from src.api_types import SGLIAPIs
 from src.gportal import GportalApi, GPortalLvlProd, GPortalResolution
 from src.jasmes import JasmesApi
+from sys import exit
 
 """
 Utility function to get the value from a dict and validate it
@@ -50,14 +56,15 @@ def search(args: Namespace):
         pl = GPortalLvlProd(args.product)
         api = GportalApi(pl)
         # send search request
-        result = api.search(args.date, args.latitude, args.longitude, args.resolution)
+        resolution = GPortalResolution.from_str(args.resolution)
+        result = api.search(args.date, args.latitude, args.longitude, resolution)
         setattr(args, "download_url", result.properties.product.downloadUrl.geturl())
     elif args.api == SGLIAPIs.JASMES:
         pl = JASMESProd(args.product)
         api = JasmesApi(pl)
         # send search request
         api.set_auth_details(args.cred)
-        result = api.search(args.date, args.latitude, args.longitude, args.resolution)
+        result = api.search(args.date, args.latitude, args.longitude, None)
         setattr(args, "ftp_path", result.filePath)
     else: 
         print("API name is not recognized")

@@ -1,15 +1,21 @@
-"""
-GPortal API
-Author: Muhammad Salah
-Email: msalah.29.10@gmail.com
-"""
+#
+# Copyright (c) 2023 Muhammad Salah msalah.29.10@gmail.com
+# Licensed under AGPL-3.0-or-later.
+# Refer to COPYING.txt for the AGPL license.
+# All rights reserved.
+# This project is developed as part of my research in the Remote Sensing Laboratory
+# in Kyoto University of Advanced Science towards my Master's Degree course.
+# The research was mainly supervised by Professor Salem Ibrahim Salem.
+#
+
 import requests
 import json
 import numpy as np
 from enum import Enum
 
-from .gportal_response import GPortalResponse, GPortalSearchResult
-from .gportal_types import GPortalResolution
+from src.gportal.gportal_response import GPortalResponse, GPortalSearchResult
+from src.gportal.gportal_types import GPortalResolution
+from src.args import TEMP_FOLDER
 import sys
 import time
 import itertools
@@ -20,6 +26,7 @@ import os
 import concurrent.futures
 import functools
 from pathlib import Path
+from io import open
 
 DATASETS = {
     "L1B": "10001003",
@@ -242,7 +249,7 @@ class GportalApi:
                 url,
                 start,
                 end,
-                f'./temp/tmp_product.part{i}',
+                os.path.join(TEMP_FOLDER, f'tmp_product.part{i}'),
             )
             for i, (start, end) in enumerate(chunks)
         ]
@@ -251,7 +258,7 @@ class GportalApi:
         # collect the downloaded chuncks in one file
         with open(output_file, 'wb') as o:
             for i in range(len(chunks)):
-                chunk_path = f'./temp/tmp_product.part{i}'
+                chunk_path = os.path.join(TEMP_FOLDER, f'tmp_product.part{i}')
 
                 with open(chunk_path, 'rb') as s:
                     o.write(s.read())

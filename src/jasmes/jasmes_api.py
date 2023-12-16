@@ -1,8 +1,13 @@
-"""
-SGLI Near Real Time FTP API (JASMES)
-Author: Muhammad Salah
-Email: msalah.29.10@gmail.com
-"""
+#
+# Copyright (c) 2023 Muhammad Salah msalah.29.10@gmail.com
+# Licensed under AGPL-3.0-or-later.
+# Refer to COPYING.txt for the AGPL license.
+# All rights reserved.
+# This project is developed as part of my research in the Remote Sensing Laboratory
+# in Kyoto University of Advanced Science towards my Master's Degree course.
+# The research was mainly supervised by Professor Salem Ibrahim Salem.
+#
+
 from datetime import datetime
 from enum import Enum
 import json
@@ -14,7 +19,7 @@ import numpy as np
 from tqdm import tqdm
 from src.jasmes.jasmes_types import JASMESResponse
 from src.jasmes.jasmes_cooredinates import COORDINATES
-
+from io import open
 
 class JASMESProd(Enum):
     NWLR_380            = "NWLR_380"
