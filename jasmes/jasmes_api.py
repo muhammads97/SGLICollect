@@ -9,11 +9,10 @@ import json
 import os
 from pathlib import Path
 from ftplib import FTP
-
+from dateutil import parser
 import numpy as np
 from tqdm import tqdm
 from .jasmes_types import JASMESResponse
-from utils import inside_polygon
 from .jasmes_cooredinates import COORDINATES
 
 
@@ -75,11 +74,12 @@ class JasmesApi:
         | longitude   : None or float
         | verbose     : boolean 
         """
+        parsed_date = parser.parse(date)
         if not self.__login():
             return None
         if not self.__go_to_product_directory():
             return None
-        if not self.__go_to_date(datetime.strptime(date, "%Y/%m/%d")):
+        if not self.__go_to_date(parsed_date):
             return None
         box_id = self.__find_square(latitude, longitude)
         if box_id == -1:
@@ -114,15 +114,26 @@ class JasmesApi:
         file_name = ftp_path.split("/")[-1]
         dir = "/".join(ftp_path.split("/")[:-1])
         self.__ftp.cwd(dir)
-        self.__output = open(os.path.join(output_dir, file_name), "wb")
         self.__ftp.voidcmd("TYPE I")
         size = self.__ftp.size(file_name)
         nblocks = (size // 8192) + (size % 8192 != 0)
         self.__pbar = tqdm(total=nblocks, unit="block")
         self.__pbar.set_description(f"{file_name}")
+        # don't download if file already exists
+        output_file = Path(os.path.join(output_dir, file_name))
+        if output_file.exists():
+            stats = os.stat(output_file)
+            if stats.st_size == size:
+                self.__pbar.update(nblocks)
+                self.__pbar.close()
+                return output_file
+            
+        self.__output = open(output_file, "wb")
+        
+        
         self.__ftp.retrbinary("RETR %s"%file_name, self.__download_callback)
         self.__output.close()
-        return os.path.join(output_dir, file_name)
+        return output_file
         
     def close(self):
         self.__ftp.quit()
@@ -185,10 +196,13 @@ class JasmesApi:
         year    = str(date.year).zfill(4)
         month   = str(date.month).zfill(2)
         day     = str(date.day).zfill(2)
-        response = self.__ftp.cwd(f"{year}/{month}/{day}")
-        if response.startswith("250"): return True
-        else:
-            print("cannot find date")
+        try:
+            response = self.__ftp.cwd(f"{year}/{month}/{day}")
+            if response.startswith("250"): return True
+            else:
+                print("cannot find date")
+                return False
+        except:
             return False
         
     def __login(self):
