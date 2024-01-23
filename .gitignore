@@ -12,3 +12,7 @@ temp_temp
 temp_temp/*
 
 cred.json
+
+build
+build/*
+*.spec

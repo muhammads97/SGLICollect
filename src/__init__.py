@@ -8,12 +8,12 @@
 # The research was mainly supervised by Professor Salem Ibrahim Salem.
 #
 
-from src import SGLIAPIs
-from src.gportal import GportalApi, GPortalLvlProd, GPortalResponse, GPortalResolution
-from src.jasmes import JasmesApi, JASMESProd, JASMESResponse
-from src.extractors import JASMESExtractor, GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor
+from src.api_types import SGLIAPIs
 from src.args import args
 from src.download import download, download_csv
-from src.search import search, search_csv
 from src.extract import extract, extract_csv
+from src.search import search, search_csv
 from src.utils import empty_temp
+from src.gportal import *
+from src.jasmes import * 
+from src.extractors import *

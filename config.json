@@ -5,9 +5,9 @@
     "latitude": 44.853750035714505,
     "longitude": 138.32875040812206,
     "date": "2023/11/21",
-    "csv": "/Users/salah/workspace/SGLI-API/temp_temp/test2.csv",
+    "csv": "/Users/salah/workspace/SGLICollect/temp_temp/test2.csv",
     "api": "GPORTAL",
-    "product_dir": "/Users/salah/workspace/SGLI-API/temp_temp/",
+    "product_dir": "/Users/salah/workspace/SGLICollect/temp_temp/",
     "no_repeat": true,
     "cred": "./cred.json"
   }
