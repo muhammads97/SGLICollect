@@ -48,10 +48,17 @@ class GportalApi:
 
         :type GPortalLvlProd L1B, L2R, or L2P
         """
-        self.token = "7726524198fa59edb5564f6d939d5b168f1ed1d3288434f000028e2d1d982695f88f11a240a224e75516bca03d3aa9ec38d8dbf918b329733c0329003e9ec10f"
+        self.fuel_csrf_token = "7726524198fa59edb5564f6d939d5b168f1ed1d3288434f000028e2d1d982695f88f11a240a224e75516bca03d3aa9ec38d8dbf918b329733c0329003e9ec10f"
+        self.token = ""
+        self.cookies = {
+            "fuel_csrf_token": self.fuel_csrf_token,
+            "iPlanetDirectoryPro": self.token
+        }
         self.baseurl = "https://gportal.jaxa.jp/gpr/search/catalog_records.json"
         self.headers = {
-            "Cookie": "fuel_csrf_token=%s" % self.token
+            "Cookie": "fuel_csrf_token=%s" % self.fuel_csrf_token,
+            "Origin": "https://gportal.jaxa.jp"
+            # "Host": "gportal.jaxa.jp"
         }
         self.dataset = DATASETS[type.value] # select product
         self.done = False # used for the loading function
@@ -72,6 +79,8 @@ class GportalApi:
         f.close()
         self.account = j["account"]
         self.password = j["password"]
+        # authenticate GPortal using account and password
+        self.__auth()
 
     def search(self, date: str, latitude: float, longitude: float, resolution: GPortalResolution, verbose: bool = True)->GPortalResponse:
         """
@@ -93,7 +102,7 @@ class GportalApi:
             "coordinates": self.__construct_polygon_coordinates(longitude, latitude),
             "dataset[0][Resolution][op]": "=",
             "dataset[0][Resolution][value][]": resolution.value,
-            "fuel_csrf_token": self.token
+            "fuel_csrf_token": self.fuel_csrf_token
         }
         if verbose:
             # show the loading message in a separate thread and wait until search is done
@@ -135,22 +144,25 @@ class GportalApi:
         Must call set_auth_details before calling this function.
         """
 
-        # authenticate GPortal using account and password
-        self.__auth()
-
         # setting up the thread pool
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=max_workers)
         loop = asyncio.new_event_loop()
         run = functools.partial(loop.run_in_executor, executor)
         asyncio.set_event_loop(loop)
 
+        download = True
         # run the download in multithreading
-        try:
-            loop.run_until_complete(
-                self.__download(run, url, output_dir, chunk_size=10000000)
-            )
-        finally:
-            loop.close()
+        while download:
+            try:
+                loop.run_until_complete(
+                    self.__download(run, url, output_dir, chunk_size=10000000)
+                )
+                download = False
+            except requests.exceptions.Timeout:
+                print("retry download ..")
+                download = True
+            finally:
+                loop.close()
 
         file_name = url.split("/")[-1]
         output_file = Path(os.path.join(output_dir, file_name))
@@ -188,34 +200,52 @@ class GportalApi:
         body = {
         "account": self.account,
         "password": self.password,
-        "fuel_csrf_token": self.token
+        "fuel_csrf_token": self.fuel_csrf_token
         } 
-        headers = {
-            "Cookie": "fuel_csrf_token=%s" % self.token
-        }
 
-        res = requests.post(auth_url, body, headers = headers)
+        res = requests.post(auth_url, body, headers = self.headers)
         if res.ok:
             # set the cookie
-            cookie = res.headers["Set-Cookie"].split("secure, ")[-1]
-            self.headers["Cookie"] = cookie
+            # cookies = res.headers["Set-Cookie"].split(";")
+            # for c in cookies:
+            #     if c.startswith("fuel_csrf_token"):
+            #         self.fuel_csrf_token = c.split("=")[1]
+            # body = res.json()
+            # self.token = body["key"]
+            # self.headers["Cookie"] = "fuel_csrf_token=%s; iPlanetDirectoryPro=%s"%(self.fuel_csrf_token, urllib.parse.quote_plus(self.token))
+            # print(res.json())
+            self.__set_cookies(res.cookies.get_dict())
         elif res.status_code == 406:
-            print("authentication failed!") 
+            print("authentication failed!")
+        else:
+            print("somthing odd: %d"%res.status_code) 
     
-    async def __get_size(self, url:str):
+    def __get_size(self, url:str):
         """
         returns the size of the file to be downloaded
         """
         response = requests.head(url, headers=self.headers, stream=True)
-        size = int(response.headers['Content-Length'])
-        return size
+        if response.status_code == 200:
+            size = int(response.headers['content-length'])
+            self.__set_cookies(response.cookies.get_dict())
+            return size
+        else:
+            print("failing to get size with response status code: %d"%response.status_code)
+            # print(response.request.headers)
+            return -1
 
     def __download_range(self, url:str, start:int, end:int, output_path:Path):
         """downloads a sequence of bytes from start to end."""
         headers = {'Range': f'bytes={start}-{end}'}
         headers.update(self.headers)
-        response = requests.get(url, headers=headers, stream=True)
-
+        done = False
+        while not done:
+            try:
+                response = requests.get(url, headers=headers, stream=True, timeout=5)
+                done = True
+            except Exception as e:
+                print("retrying")
+        self.__set_cookies(response.cookies.get_dict())
         with open(output_path, 'wb') as f:
             for part in response.iter_content(1024):
                 f.write(part)
@@ -225,11 +255,10 @@ class GportalApi:
         """download the file by dividing it into chucks of 1mb and calling a thread for each chunck"""
         file_name = url.split("/")[-1]
         print("downloading file:", file_name, "into:", output_dir.absolute())
-        try:
-            file_size = await self.__get_size(url)
-        except:
-            print("failed to get size")
+        file_size = self.__get_size(url)
+        if file_size == -1:
             return
+        print("downloading file:", file_name, "into:", output_dir.absolute(), "with size: ", file_size)
         output_file = Path(os.path.join(output_dir, file_name))
 
         # don't download if file already exists
@@ -238,9 +267,11 @@ class GportalApi:
             if stats.st_size == file_size:
                 # print("file already exists!")
                 return
-
-        chunks = [(i*chunk_size, (i+1)*chunk_size-1) for i in range(file_size//chunk_size)]
-        if file_size%chunk_size > 0: chunks.append((chunks[-1][1]+1, chunks[-1][1]+file_size%chunk_size+1))
+        if file_size <= chunk_size:
+            chunks = [(0, file_size)]
+        else:
+            chunks = [(i*chunk_size, (i+1)*chunk_size-1) for i in range(file_size//chunk_size)]
+            if file_size%chunk_size > 0: chunks.append((chunks[-1][1]+1, chunks[-1][1]+file_size%chunk_size+1))
 
         self.pbar = tqdm(total=len(chunks))
         tasks = [
@@ -264,5 +295,13 @@ class GportalApi:
                     o.write(s.read())
 
                 os.remove(chunk_path)
+
+    def __set_cookies(self, cookie_dict:dict):
+        for k in cookie_dict.keys():
+            self.cookies[k] = cookie_dict[k]
+        cookies_str  = ""
+        for k in self.cookies.keys():
+            cookies_str += "%s=%s; "%(k, self.cookies[k])
+        self.headers["Cookie"] = cookies_str
 
     
