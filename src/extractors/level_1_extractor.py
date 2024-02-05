@@ -34,11 +34,8 @@ class GPortalL1BExtractor(Extractor):
 
         # Validate
         errors[rad_or_ref == data.attrs['Error_DN'][0]] = True
-        with np.warnings.catch_warnings():
-            np.warnings.filterwarnings(
-                'ignore', r'invalid value encountered in (greater|less)')
-            errors[rad_or_ref > data.attrs['Maximum_valid_DN'][0]] = True
-            errors[rad_or_ref < data.attrs['Minimum_valid_DN'][0]] = True
+        errors[rad_or_ref > data.attrs['Maximum_valid_DN'][0]] = True
+        errors[rad_or_ref < data.attrs['Minimum_valid_DN'][0]] = True
 
         # Convert DN to physical value
         if radiance:

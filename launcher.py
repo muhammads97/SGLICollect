@@ -13,8 +13,10 @@ from src.download import download, download_csv
 from src.search import search, search_csv
 from src.extract import extract, extract_csv
 from src.utils import empty_temp
+from multiprocessing import freeze_support
 
 if __name__ == "__main__":
+    freeze_support()
     if args.search:
         if args.csv: search_csv(args)
         else:        search(args)

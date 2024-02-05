@@ -13,9 +13,6 @@ from src.jasmes import JASMESProd
 from src.extractors.extractor_interface import Extractor
 import numpy as np
 from netCDF4 import Dataset
-import warnings
-
-
 
 class JASMESExtractor(Extractor):
     def __init__(self, path: Path, prod:JASMESProd):

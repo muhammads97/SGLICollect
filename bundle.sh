@@ -1,5 +1,5 @@
 rm -r ./dist
-pyinstaller -D launcher.py --name SGLICollect \
+pyinstaller -F launcher.py --name SGLICollect \
     -p . \
     -p src \
     -p src/extractors \
