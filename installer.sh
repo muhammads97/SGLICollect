@@ -38,8 +38,8 @@ then
     mkdir "bin"
     cd "bin"
     curl \
-    -H 'Authorization: token $YOUR_TOKEN' \
     -H 'Accept: application/vnd.github.v3.raw' \
     -O \
     -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/linux/SGLICollect"
+
 fi
