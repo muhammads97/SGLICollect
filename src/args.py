@@ -15,15 +15,18 @@ from src.api_types import SGLIAPIs
 from sys import exit
 from io import open
 import os
+import tempfile
 
-__version__ = "1.0-beta1"
+__version__ = "1.1.1"
 dirs = __file__.split("/")
 dir_index = -1
 for i,d in enumerate(dirs):
     if d == "SGLICollect":
         dir_index = i
 
-TEMP_FOLDER = Path(os.path.join("/".join(dirs[:dir_index+1]), "temp/"))
+
+TEMP_FOLDER = Path(os.path.join(tempfile.gettempdir(), "SGLICollect"))
+TEMP_FOLDER.mkdir(exist_ok=True)
 
 parser = argparse.ArgumentParser(description="Welcome to SGLICollect!\n"
                                              "This API is developed for searching and downloading SGLI Images.\n" 
