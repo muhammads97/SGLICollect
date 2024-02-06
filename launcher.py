@@ -7,6 +7,8 @@
 # in Kyoto University of Advanced Science towards my Master's Degree course.
 # The research was mainly supervised by Professor Salem Ibrahim Salem.
 #
+import warnings
+warnings.simplefilter('ignore')
 
 from src.args import args
 from src.download import download, download_csv
