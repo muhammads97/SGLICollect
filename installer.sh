@@ -35,11 +35,9 @@ then
     | sort --version-sort                \
     | tail --lines=1 )
     echo "Installing SGLICollect version=${tag}.."
-    mkdir "bin"
-    cd "bin"
     curl \
     -H 'Accept: application/vnd.github.v3.raw' \
-    -O \
-    -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/linux/SGLICollect"
+    -O -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/linux/SGLICollect"
 
+    echo "Installation completed! add (${sc_dir}) to your system path to use SGLICollect from any directory."
 fi

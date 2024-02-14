@@ -208,11 +208,13 @@ def extract_csv(args:Namespace):
         for r in range(len(group)):
             lat, lon = float(group.iloc[r]["lat"]), float(group.iloc[r]["lon"])
             # extract pixel values
-            pixel = extractor.get_pixel(lat, lon)
-            # add the pixel to the df
-            for k in pixel.keys():
-                df.loc[group.index[r], k] = pixel[k]
-            
+            try:
+                pixel = extractor.get_pixel(lat, lon)
+                # add the pixel to the df
+                for k in pixel.keys():
+                    df.loc[group.index[r], k] = pixel[k]
+            except:
+                continue
             # update the progress bar
             pbar.set_description(f"{i+1}/{len(grouped)}:{id}###{r+1}/{len(group)}")
             pbar.update()
