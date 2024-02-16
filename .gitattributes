@@ -1,3 +1,4 @@
 dist/SGLICollect filter=lfs diff=lfs merge=lfs -text
 dist/linux filter=lfs diff=lfs merge=lfs -text
 dist/linux/SGLICollect filter=lfs diff=lfs merge=lfs -text
+dist/mac/SGLICollect filter=lfs diff=lfs merge=lfs -text
