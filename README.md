@@ -21,8 +21,7 @@
 
 ## Installation
 
-This section explains how to download and set up SGLICollect for various environment
-(The stand-alone version of SGLICollect is currently under construction, also GUI will be added soon)
+This section explains how to download and set up SGLICollect for various environments (The stand-alone version of SGLICollect is currently under construction, also GUI will be added soon)
 ### Conda
 
 To use SGLICollect inside a conda environment please follow the instructions in this section
@@ -62,7 +61,7 @@ Configuration options:
     - `csv`          : a path to a CSV file for bulk processing mode. (This will override the parameters provided for single-entry mode), refer to [CSV file format](#csv-file-format).
     - `api`          : `GPORTAL` or `JASMES` (Default: `GPORTAL`).
     - `download_dir` : Download directory (for both single-entry and bulk-processing). If not provided, the files will be downloaded in the temp directory and they will be deleted once the processing ends.
-    - `cred`         : path to Json file containing account and password (refer to [Credentials file](#credentials-file)).
+    - `cred`         : path to JSON file containing account and password (refer to [Credentials file](#credentials-file)).
     - `product_dir`  : directory of all products used for the extraction step for bulk-processing mode.
     - `product_path` : path for a single product to extract from, used in the single-entry mode.
     - `no_repeat`    : `true` or `false`. Used for search and download, if the entry already exists in the CSV or the file is already downloaded the operation will be skipped. (default: false)
@@ -183,7 +182,7 @@ No updates to the CSV, the files will be downloaded either in the specified down
 
 ##### Extract output (JASMES):
 
-The output column is that same as the product name.
+The output column is the same as the product name.
 
 ### Example usage (single-entry)
 
