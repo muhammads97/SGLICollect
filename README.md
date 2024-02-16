@@ -21,8 +21,22 @@
 
 ## Installation
 
-This section explains how to download and set up SGLICollect for various environments (The stand-alone version of SGLICollect is currently under construction, also GUI will be added soon)
-### Conda
+This section explains how to download and set up SGLICollect for various environments (The GUI version of SGLICollect is currently under construction)
+
+### Stand-alone installation
+
+1. Download the bash installer:
+`curl -L -o SGLICollect_installer.sh https://raw.githubusercontent.com/muhammads97/SGLICollect/main/installer.sh`
+
+2. Run the installer:
+`sh SGLICollect_installer.sh`
+
+3. Add SGLICollect to the system path
+
+Now you can use SGLICollect as follows:
+`SGLICollect --version`
+
+### Conda python installation
 
 To use SGLICollect inside a conda environment please follow the instructions in this section
 
@@ -49,6 +63,9 @@ The services provided in each mode are as follows:
 All the parameters for these services are set using the `config.json` file
 
 To run the SGLICollect, set the parameters needed in `config.json` and run:
+for the stand-alone version:
+`SGLICollect -c <path to config.json>`
+for the conda python installation:
 `python <path to SGLICollect> -c <path to config.json>`
 
 Configuration options:
