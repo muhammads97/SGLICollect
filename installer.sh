@@ -64,10 +64,10 @@ then
     mkdir $sc_dir -p
     cd $sc_dir
     tag=$(git ls-remote --refs --tags https://github.com/muhammads97/SGLICollect.git \
-    | cut --delimiter='/' --fields=3     \
-    | tr '-' '~'                         \
-    | sort --version-sort                \
-    | tail --lines=1 )
+    | cut -d '/' -f 3 \
+    | tr '-' '~' \
+    | sort -V \
+    | tail -n 1 )
     echo "Installing SGLICollect version=${tag}.."
     curl \
     -H 'Accept: application/vnd.github.v3.raw' \
