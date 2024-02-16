@@ -71,7 +71,7 @@ then
     echo "Installing SGLICollect version=${tag}.."
     curl \
     -H 'Accept: application/vnd.github.v3.raw' \
-    -O -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/linux/SGLICollect"
+    -O -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/mac/SGLICollect"
 
     chmod 755 "${sc_dir}/SGLICollect"
 
