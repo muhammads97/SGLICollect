@@ -73,7 +73,7 @@ then
     -H 'Accept: application/vnd.github.v3.raw' \
     -O -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/linux/SGLICollect"
 
-    chmod +x "${sc_dir}/SGLICollect"
+    chmod 755 "${sc_dir}/SGLICollect"
 
     echo "Installation completed! add (${sc_dir}) to your system path to use SGLICollect from any directory."
 fi
