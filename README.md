@@ -19,9 +19,6 @@
     <br> 
 </p>
 
-## Documentation and Usage
-(under construction) Full documentation and usage of the project will be provided soon
-
 ## Installation
 
 This section explains how to download and set up SGLICollect for various environment
