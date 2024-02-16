@@ -1,13 +1,11 @@
 {
-  "operations": ["search", "download", "extract"],
+  "operations": ["extract"],
   "args": {
-    "product": "L2P",
-    "latitude": 44.853750035714505,
-    "longitude": 138.32875040812206,
-    "date": "2023/11/21",
-    "csv": "/Users/salah/workspace/SGLICollect/temp_temp/test2.csv",
+    "product": "L2R",
+    "csv": "/home/muhammad/Chla_TSM_PC_DC_data_SeaBASS_2014_2023_MainPar.csv",
     "api": "GPORTAL",
-    "product_dir": "/Users/salah/workspace/SGLICollect/temp_temp/",
+    "download_dir": "/home/shared/Data/SGLI/sgli-lvl2/",
+    "product_dir": "/home/shared/Data/SGLI/sgli-lvl2/",
     "no_repeat": true,
     "cred": "./cred.json"
   }
