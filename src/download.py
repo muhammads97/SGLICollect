@@ -76,7 +76,6 @@ def download_csv(args: Namespace):
     Bulk download operation using csv file for GPORTAL
     arguments provided through json file or cmdline arguments:
         - product: GPortal Products or Jasmes Products
-        - download_url: url of the product
         - download_dir: directory to download the file
         - cred: path to json file containing account and password
         |       Example:
