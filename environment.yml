@@ -1,0 +1,12 @@
+name: SGLICollect
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - h5py
+  - tqdm
+  - requests
+  - python=3.11
+  - netcdf4
+
