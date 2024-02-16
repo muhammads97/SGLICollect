@@ -13,9 +13,6 @@ from src.jasmes import JASMESProd
 from src.extractors.extractor_interface import Extractor
 import numpy as np
 from netCDF4 import Dataset
-import warnings
-
-
 
 class JASMESExtractor(Extractor):
     def __init__(self, path: Path, prod:JASMESProd):
@@ -32,13 +29,6 @@ class JASMESExtractor(Extractor):
         prod:str = str(self.__prod.value)
 
         data = self.__nc.variables[prod]
-        errors = data[:].mask
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                'ignore', r'invalid value encountered in (greater|less)')
-            errors[data[:].data > data.Maximum_valid_DN] = True
-            errors[data[:].data < data.Minimum_valid_DN] = True
-
         # Convert DN to physical value
         if rrs:
             scale = data.Rrs_scale_factor
@@ -47,7 +37,8 @@ class JASMESExtractor(Extractor):
             physical_data = digital_data * scale + offset
         else:
             physical_data = data[:].data
-        physical_data[errors] = np.nan
+        physical_data[physical_data > data.Maximum_valid_DN] = np.nan
+        physical_data[physical_data < data.Minimum_valid_DN] = np.nan
         return physical_data
     
     def get_lat_lon(self) -> tuple[list[float], list[float]]:
@@ -78,7 +69,6 @@ class JASMESExtractor(Extractor):
     def get_pixel(self, lat:float, lon:float) -> dict:
         lat_mat, lon_mat = self.get_lat_lon()
         row, col = self.__find_entry(lat_mat, lon_mat, lat, lon)
-        print(row, col)
         if str(self.__prod.value).startswith("NWL"):
             pixel = {
                 f"{str(self.__prod.value)}": self.__handle_digital_number()[row, col],

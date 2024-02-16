@@ -16,3 +16,5 @@ cred.json
 build
 build/*
 *.spec
+
+env.yml

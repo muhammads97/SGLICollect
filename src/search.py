@@ -13,6 +13,7 @@ from argparse import Namespace
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import time
 from src import download, download_csv
 from src.jasmes import JASMESProd
 from src.api_types import SGLIAPIs
@@ -30,14 +31,22 @@ def get_value(d: dict, key: str):
     if key in d and d[key]:
         return d[key]
     
-def fill_group(df, g):
+def fill_group(df, g, api):
+    
     for j in range(len(g)):
-        df.loc[df.index[g.index[j]], "identifier"] = g.iloc[0]["identifier"]
-        df.loc[df.index[g.index[j]], "file_status"] = g.iloc[0]["file_status"]
-        df.loc[df.index[g.index[j]], "resolution"] = g.iloc[0]["resolution"]
-        df.loc[df.index[g.index[j]], "download_url"] = g.iloc[0]["download_url"]
-        df.loc[df.index[g.index[j]], "preview_url"] = g.iloc[0]["preview_url"]
-        df.loc[df.index[g.index[j]], "cloud_coverage"] = g.iloc[0]["cloud_coverage"]
+        if api ==SGLIAPIs.GPORTAL:
+            df.loc[df.index[g.index[j]], "identifier"] = g.iloc[0]["identifier"]
+            df.loc[df.index[g.index[j]], "file_status"] = g.iloc[0]["file_status"]
+            df.loc[df.index[g.index[j]], "resolution"] = g.iloc[0]["resolution"]
+            df.loc[df.index[g.index[j]], "download_url"] = g.iloc[0]["download_url"]
+            df.loc[df.index[g.index[j]], "preview_url"] = g.iloc[0]["preview_url"]
+            df.loc[df.index[g.index[j]], "cloud_coverage"] = g.iloc[0]["cloud_coverage"]
+        elif api == SGLIAPIs.JASMES:
+            df.loc[df.index[g.index[j]], "file_name"] = g.iloc[0]["file_name"]
+            df.loc[df.index[g.index[j]], "file_size"] = g.iloc[0]["file_size"]
+            df.loc[df.index[g.index[j]], "ftp_path"] = g.iloc[0]["ftp_path"]
+            df.loc[df.index[g.index[j]], "box_id"] = g.iloc[0]["box_id"]
+
 
 
 def search(args: Namespace):
@@ -130,12 +139,22 @@ def search_csv(args: Namespace):
 
         # progress if no repeat and id exists
         if id and args.no_repeat: 
-            fill_group(df, g)
+            fill_group(df, g, args.api)
             pbar.update(len(g))
             continue
 
-        # send search request 
-        result = api.search(date, lat, lon, resolution, verbose=False)
+        search_error = False
+        while True:
+            if search_error:
+                time.sleep(10)
+            try:
+                # send search request 
+                result = api.search(date, lat, lon, resolution, verbose=False)
+                search_error = False
+            except:
+                search_error = True
+            if not search_error: break
+
         # if results returned add to the data
         if result != None:
             for j in range(len(g)):
