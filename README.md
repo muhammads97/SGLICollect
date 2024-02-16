@@ -23,7 +23,7 @@
 
 This section explains how to download and set up SGLICollect for various environments (The GUI version of SGLICollect is currently under construction)
 
-### Stand-alone installation
+### Stand-alone installation (Linux and MacOS only)
 
 1. Download the bash installer:
 `curl -L -o SGLICollect_installer.sh https://raw.githubusercontent.com/muhammads97/SGLICollect/main/installer.sh`
