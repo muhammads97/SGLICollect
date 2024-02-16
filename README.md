@@ -22,7 +22,7 @@
 ## Installation
 
 This section explains how to download and set up SGLICollect for various environment
-
+(The stand-alone version of SGLICollect is currently under construction, also GUI will be added soon)
 ### Conda
 
 To use SGLICollect inside a conda environment please follow the instructions in this section
