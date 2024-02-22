@@ -181,6 +181,9 @@ class JasmesApi:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Thermal_analysis/SST")
         elif self.__prod == JASMESProd.Cloud_probability:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Thermal_analysis/Cloud_probability")
+        else:
+            print("Product %s is not supported yet.."%self.__prod.value)
+            exit(1)
         if not response.startswith("250"):
             print("cannot open product directory")
             return False
