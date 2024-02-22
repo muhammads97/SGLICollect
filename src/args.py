@@ -78,7 +78,7 @@ parser.add_argument(
     nargs="?",
     type=SGLIAPIs,
     default=SGLIAPIs.GPORTAL,
-    help="API: GPORTAL or JASMES (Not implemented yet)",
+    help="API: GPORTAL or JASMES",
 )
 parser.add_argument(
     "-c", "--config-file", type=Path, help="provide the arguments in a json file"
