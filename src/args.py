@@ -113,6 +113,8 @@ parser.add_argument(
 )
 args, _ = parser.parse_known_args()
 
+args.download_dir.mkdir(exist_ok=True, parents=True) # create the download directory if it doesn't exist
+
 if args.config_file:
     f = open(args.config_file)
     config = json.load(f)
