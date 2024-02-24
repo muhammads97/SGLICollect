@@ -10,6 +10,7 @@
 
 
 from argparse import Namespace
+import json
 
 from src.api_types import SGLIAPIs
 from src.gportal import GPortalLvlProd, GportalApi
@@ -17,6 +18,8 @@ from src.jasmes import JasmesApi, JASMESProd
 from src.extract import extract, extract_csv
 import pandas as pd
 from sys import exit
+
+from src.jasmes.jasmes_collector import JasmesCollector
 
 def download(args: Namespace):
     """
@@ -49,17 +52,16 @@ def download(args: Namespace):
         # start the download process
         product_path = api.download(download_url, args.download_dir)
     elif args.api == SGLIAPIs.JASMES:
-        pl = JASMESProd(args.product)
-        api = JasmesApi(pl)
+        api = JasmesCollector()
         # for single file download the url must be provided directly on arguments
         if args.ftp_path == None: 
             print("ftp_path must be set!")
             exit(1)
-        ftp_path = str(args.ftp_path)
+        ftp_paths = json.loads(str(args.ftp_path))
         # supply the API with the auth credentials  
         api.set_auth_details(args.cred)
         # start the download process
-        product_path = api.download(ftp_path, args.download_dir)
+        product_path = api.download(ftp_paths, args.download_dir)
     else:
         print("API name is not recognized")
         exit(1)
@@ -91,9 +93,8 @@ def download_csv(args: Namespace):
         api = GportalApi(pl)
         group_key = "download_url"
     elif args.api == SGLIAPIs.JASMES:
-        pl = JASMESProd(args.product)
-        api = JasmesApi(pl)
-        group_key = "ftp_path"
+        api = JasmesCollector()
+        group_key = "ftp_path_380"
     
     print("=============================")
     print("Downloading files...")
@@ -105,10 +106,18 @@ def download_csv(args: Namespace):
     df = pd.read_csv(args.csv) # read csv
     df =df.groupby(group_key) # only download uniqe urls
 
-    for i, (url, _) in enumerate(df):
+    for i, (url, g) in enumerate(df):
         print(f"> {i+1}/{len(df)}", end=": ") # progress indicator 
-        # start the download of the i's url
-        api.download(url, args.download_dir)
+        if args.api == SGLIAPIs.JASMES:
+            row = g.iloc[0].to_dict()
+            paths = {}
+            for k in row.keys():
+                if k.startswith("ftp_path"):
+                    paths[k] = row[k]
+            api.download(paths, args.download_dir)
+        else:
+            # start the download of the i's url
+            api.download(url, args.download_dir)
 
     if args.extract:
         setattr(args, "product_dir", args.download_dir)

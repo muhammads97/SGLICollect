@@ -18,3 +18,5 @@ build/*
 *.spec
 
 env.yml
+
+*.csv

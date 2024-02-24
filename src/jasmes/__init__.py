@@ -9,3 +9,4 @@
 #
 
 from src.jasmes.jasmes_api import JasmesApi, JASMESProd, JASMESResponse
+from src.jasmes.jasmes_collector import JasmesCollector, JASMESCollection

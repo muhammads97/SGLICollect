@@ -30,15 +30,10 @@ class JASMESProd(Enum):
     NWLR_530            = "NWLR_530"
     NWLR_565            = "NWLR_565"
     NWLR_670            = "NWLR_670"
-    PAR                 = "PAR"
-    TAUA_670            = "TAUA_670"
-    TAUA_865            = "TAUA_865"
-    FAI                 = "FAI"
     CDOM                = "CDOM"
     CHLA                = "CHLA"
     TSM                 = "TSM"
     SST                 = "SST"
-    Cloud_probability   = "Cloud_probability"
 
 class JasmesApi:
     __logged_in = False
@@ -52,6 +47,9 @@ class JasmesApi:
 
         self.__prod = type
         self.__ftp = FTP("apollo.eorc.jaxa.jp")
+
+    def set_prod(self, prod: JASMESProd):
+        self.__prod = prod
     def set_auth_details(self, cred:Path):
         """
         sets the account and password for using for download functionality.
@@ -163,14 +161,6 @@ class JasmesApi:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_565")
         elif self.__prod == JASMESProd.NWLR_670:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_670")
-        elif self.__prod == JASMESProd.PAR:
-            response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/PAR")
-        elif self.__prod == JASMESProd.TAUA_670:
-            response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/TAUA_670")
-        elif self.__prod == JASMESProd.TAUA_865:
-            response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/TAUA_865")
-        elif self.__prod == JASMESProd.FAI:
-            response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/TAUA_865")
         elif self.__prod == JASMESProd.CHLA:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_In-water_properties/CHLA")
         elif self.__prod == JASMESProd.CDOM:
@@ -179,8 +169,6 @@ class JasmesApi:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_In-water_properties/TSM")
         elif self.__prod == JASMESProd.SST:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Thermal_analysis/SST")
-        elif self.__prod == JASMESProd.Cloud_probability:
-            response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Thermal_analysis/Cloud_probability")
         else:
             print("Product %s is not supported yet.."%self.__prod.value)
             exit(1)
