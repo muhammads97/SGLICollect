@@ -47,9 +47,6 @@ def download(args: Namespace):
         # supply the API with the auth credentials  
         # this is only needed for download not search
         api.set_auth_details(args.cred)
-        # check if the download_dir is exist
-        if args.download_dir and not os.path.exists(args.download_dir):
-            os.makedirs(args.download_dir)
         # start the download process
         product_path = api.download(download_url, args.download_dir)
     elif args.api == SGLIAPIs.JASMES:
@@ -62,9 +59,6 @@ def download(args: Namespace):
         ftp_path = str(args.ftp_path)
         # supply the API with the auth credentials  
         api.set_auth_details(args.cred)
-        # check if the download_dir is exist
-        if args.download_dir and not os.path.exists(args.download_dir):
-            os.makedirs(args.download_dir)
         # start the download process
         product_path = api.download(ftp_path, args.download_dir)
     else:
@@ -114,9 +108,6 @@ def download_csv(args: Namespace):
 
     for i, (url, _) in enumerate(df):
         print(f"> {i+1}/{len(df)}", end=": ") # progress indicator 
-        # check if the download_dir is exist
-        if args.download_dir and not os.path.exists(args.download_dir):
-            os.makedirs(args.download_dir)
         # start the download of the i's url
         api.download(url, args.download_dir)
 

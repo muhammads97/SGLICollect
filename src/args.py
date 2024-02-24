@@ -113,8 +113,6 @@ parser.add_argument(
 )
 args, _ = parser.parse_known_args()
 
-args.download_dir.mkdir(exist_ok=True, parents=True) # create the download directory if it doesn't exist
-
 if args.config_file:
     f = open(args.config_file)
     config = json.load(f)
@@ -143,6 +141,10 @@ if args.search:
         if args.latitude == None or args.longitude == None:
             print("latitude and longitude must be provided")
             exit(1)
+
+if args.download:
+    args.download_dir.mkdir(exist_ok=True, parents=True) # create the download directory if it doesn't exist
+    
 if args.cred == None:
     print("credentials must be provided via a json file")
     exit(1)
