@@ -17,7 +17,6 @@ from src.jasmes import JasmesApi, JASMESProd
 from src.extract import extract, extract_csv
 import pandas as pd
 from sys import exit
-import os
 
 def download(args: Namespace):
     """
