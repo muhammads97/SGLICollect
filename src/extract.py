@@ -80,11 +80,12 @@ def extract(args:Namespace):
     # select the apropriate extractor
     # and provide the product path
     if args.api == SGLIAPIs.GPORTAL:
-        if args.product == GPortalLvlProd.L1B:
+        p = GPortalLvlProd(args.product)
+        if p == GPortalLvlProd.L1B:
             extractor = GPortalL1BExtractor(args.product_path)
-        elif args.product == GPortalLvlProd.L2R:
+        elif p == GPortalLvlProd.L2R:
             extractor = GPortalL2RExtractor(args.product_path)
-        elif args.product == GPortalLvlProd.L2P:
+        elif p == GPortalLvlProd.L2P:
             extractor = GPortalL2PExtractor(args.product_path)
         else:
             print("level or product not supported yet")
