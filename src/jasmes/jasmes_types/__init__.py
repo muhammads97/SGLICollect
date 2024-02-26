@@ -9,3 +9,4 @@
 #
 
 from src.jasmes.jasmes_types.jasmes_response import JASMESResponse, OUTPUT_COLUMNS
+from src.jasmes.jasmes_types.jasmes_collection import JASMESCollection

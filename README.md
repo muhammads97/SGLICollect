@@ -99,15 +99,10 @@ Configuration options:
 5. `NWLR_530`: Water leaving radiance at 530 nm.
 6. `NWLR_565`: Water leaving radiance at 565 nm.
 7. `NWLR_670`: Water leaving radiance at 670 nm.
-8. `PAR` 
-9. `TAUA_670`         
-10. `TAUA_865`        
-11. `FAI`              
-12. `CDOM`   : Colored Dissolved Organic Matter.               
-13. `CHLA`   : Chlorophyll-a concentration.          
-14. `TSM`    : Total Suspended Matter.         
-15. `SST`    : Sea Surface Temperature.          
-16. `Cloud_probability`
+8. `CDOM`   : Colored Dissolved Organic Matter.               
+9. `CHLA`   : Chlorophyll-a concentration.          
+10. `TSM`    : Total Suspended Matter.         
+11. `SST`    : Sea Surface Temperature.          
 
 ### Credentials file
 
