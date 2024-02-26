@@ -11,13 +11,13 @@
 import pandas as pd
 import json
 OUTPUT_COLUMNS = [
-    "ftp_path_380",
-    "ftp_path_412",
-    "ftp_path_443",
-    "ftp_path_490",
-    "ftp_path_530",
-    "ftp_path_565",
-    "ftp_path_670",
+    "ftp_path_NWLR_380",
+    "ftp_path_NWLR_412",
+    "ftp_path_NWLR_443",
+    "ftp_path_NWLR_490",
+    "ftp_path_NWLR_530",
+    "ftp_path_NWLR_565",
+    "ftp_path_NWLR_670",
     "ftp_path_CDOM",
     "ftp_path_CHLA",
     "ftp_path_TSM",
@@ -73,13 +73,13 @@ class JASMESCollection:
         """
         print("Files found:")
         print(
-            "ftp_path_380: %s"%self.ftp_path_380,
-            "ftp_path_412: %s"%self.ftp_path_412,
-            "ftp_path_443: %s"%self.ftp_path_443,
-            "ftp_path_490: %s"%self.ftp_path_490,
-            "ftp_path_530: %s"%self.ftp_path_530,
-            "ftp_path_565: %s"%self.ftp_path_565,
-            "ftp_path_670: %s"%self.ftp_path_670,
+            "ftp_path_NWLR_380: %s"%self.ftp_path_380,
+            "ftp_path_NWLR_412: %s"%self.ftp_path_412,
+            "ftp_path_NWLR_443: %s"%self.ftp_path_443,
+            "ftp_path_NWLR_490: %s"%self.ftp_path_490,
+            "ftp_path_NWLR_530: %s"%self.ftp_path_530,
+            "ftp_path_NWLR_565: %s"%self.ftp_path_565,
+            "ftp_path_NWLR_670: %s"%self.ftp_path_670,
             "ftp_path_CDOM: %s"%self.ftp_path_CDOM,
             "ftp_path_CHLA: %s"%self.ftp_path_CHLA,
             "ftp_path_TSM: %s"%self.ftp_path_TSM,
@@ -89,13 +89,13 @@ class JASMESCollection:
 
     def get_json(self):
         return json.dumps({
-            "ftp_path_380": self.ftp_path_380,
-            "ftp_path_412": self.ftp_path_412,
-            "ftp_path_443": self.ftp_path_443,
-            "ftp_path_490": self.ftp_path_490,
-            "ftp_path_530": self.ftp_path_530,
-            "ftp_path_565": self.ftp_path_565,
-            "ftp_path_670": self.ftp_path_670,
+            "ftp_path_NWLR_380": self.ftp_path_380,
+            "ftp_path_NWLR_412": self.ftp_path_412,
+            "ftp_path_NWLR_443": self.ftp_path_443,
+            "ftp_path_NWLR_490": self.ftp_path_490,
+            "ftp_path_NWLR_530": self.ftp_path_530,
+            "ftp_path_NWLR_565": self.ftp_path_565,
+            "ftp_path_NWLR_670": self.ftp_path_670,
             "ftp_path_CDOM":self.ftp_path_CDOM,
             "ftp_path_CHLA":self.ftp_path_CHLA,
             "ftp_path_TSM":self.ftp_path_TSM,
@@ -116,13 +116,13 @@ class JASMESCollection:
                     df[c] = []
         if(index == df.size):
             j = pd.DataFrame([{
-                "ftp_path_380": self.ftp_path_380,
-                "ftp_path_412": self.ftp_path_412,
-                "ftp_path_443": self.ftp_path_443,
-                "ftp_path_490": self.ftp_path_490,
-                "ftp_path_530": self.ftp_path_530,
-                "ftp_path_565": self.ftp_path_565,
-                "ftp_path_670": self.ftp_path_670,
+                "ftp_path_NWLR_380": self.ftp_path_380,
+                "ftp_path_NWLR_412": self.ftp_path_412,
+                "ftp_path_NWLR_443": self.ftp_path_443,
+                "ftp_path_NWLR_490": self.ftp_path_490,
+                "ftp_path_NWLR_530": self.ftp_path_530,
+                "ftp_path_NWLR_565": self.ftp_path_565,
+                "ftp_path_NWLR_670": self.ftp_path_670,
                 "ftp_path_CDOM": self.ftp_path_CDOM,
                 "ftp_path_CHLA": self.ftp_path_CHLA,
                 "ftp_path_TSM": self.ftp_path_TSM,
@@ -131,13 +131,13 @@ class JASMESCollection:
             df = pd.concat([df, j], axis=0, ignore_index=True)
         else:
             index = df.index[index]
-            df.loc[index, "ftp_path_380"] = self.ftp_path_380
-            df.loc[index, "ftp_path_412"] = self.ftp_path_412
-            df.loc[index, "ftp_path_443"] = self.ftp_path_443
-            df.loc[index, "ftp_path_490"] = self.ftp_path_490
-            df.loc[index, "ftp_path_530"] = self.ftp_path_530
-            df.loc[index, "ftp_path_565"] = self.ftp_path_565
-            df.loc[index, "ftp_path_670"] = self.ftp_path_670
+            df.loc[index, "ftp_path_NWLR_380"] = self.ftp_path_380
+            df.loc[index, "ftp_path_NWLR_412"] = self.ftp_path_412
+            df.loc[index, "ftp_path_NWLR_443"] = self.ftp_path_443
+            df.loc[index, "ftp_path_NWLR_490"] = self.ftp_path_490
+            df.loc[index, "ftp_path_NWLR_530"] = self.ftp_path_530
+            df.loc[index, "ftp_path_NWLR_565"] = self.ftp_path_565
+            df.loc[index, "ftp_path_NWLR_670"] = self.ftp_path_670
             df.loc[index, "ftp_path_CDOM"] = self.ftp_path_CDOM
             df.loc[index, "ftp_path_CHLA"] = self.ftp_path_CHLA
             df.loc[index, "ftp_path_TSM"] = self.ftp_path_TSM

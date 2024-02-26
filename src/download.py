@@ -94,7 +94,7 @@ def download_csv(args: Namespace):
         group_key = "download_url"
     elif args.api == SGLIAPIs.JASMES:
         api = JasmesCollector()
-        group_key = "ftp_path_380"
+        group_key = "ftp_path_NWLR_380"
     
     print("=============================")
     print("Downloading files...")
