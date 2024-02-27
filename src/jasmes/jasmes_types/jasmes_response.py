@@ -8,8 +8,6 @@
 # The research was mainly supervised by Professor Salem Ibrahim Salem.
 #
 
-from ftplib import FTP
-
 import pandas as pd
 
 OUTPUT_COLUMNS = [

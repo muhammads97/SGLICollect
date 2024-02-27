@@ -10,6 +10,7 @@
 
 
 from argparse import Namespace
+import json
 import os
 
 import pandas as pd
@@ -17,6 +18,7 @@ import numpy as np
 from tqdm import tqdm
 
 from src.extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor, JASMESExtractor
+from src.extractors.jasmes_multi_extractor import JASMESMultiExtractor
 from src.jasmes import JASMESProd
 from src.gportal import GPortalLvlProd
 from src.api_types import SGLIAPIs
@@ -78,18 +80,19 @@ def extract(args:Namespace):
     # select the apropriate extractor
     # and provide the product path
     if args.api == SGLIAPIs.GPORTAL:
-        if args.product == GPortalLvlProd.L1B:
+        p = GPortalLvlProd(args.product)
+        if p == GPortalLvlProd.L1B:
             extractor = GPortalL1BExtractor(args.product_path)
-        elif args.product == GPortalLvlProd.L2R:
+        elif p == GPortalLvlProd.L2R:
             extractor = GPortalL2RExtractor(args.product_path)
-        elif args.product == GPortalLvlProd.L2P:
+        elif p == GPortalLvlProd.L2P:
             extractor = GPortalL2PExtractor(args.product_path)
         else:
             print("level or product not supported yet")
             exit(1)
     else:
-        pl = JASMESProd(args.product)
-        extractor = JASMESExtractor(args.product_path, pl)
+        prod_paths = json.loads(str(args.product_path))
+        extractor = JASMESMultiExtractor(prod_paths)
 
     # get pixel information
     pixel = extractor.get_pixel(args.latitude, args.longitude)
@@ -163,8 +166,8 @@ def extract_csv(args:Namespace):
             print("level or product not supported yet")
             exit(1)
     elif args.api == SGLIAPIs.JASMES:
-        group_key = "file_name"
-        Extractor = JASMESExtractor
+        group_key = "ftp_path_NWLR_380"
+        Extractor = JASMESMultiExtractor
     else:
         print("to be implemented")
         exit(1)
@@ -195,10 +198,16 @@ def extract_csv(args:Namespace):
         try:
             # try to open the product (may fail if file is corrupt)
             if args.api == SGLIAPIs.GPORTAL:
+                # make the product path by joining the product name and the product directory
+                prod_path = os.path.join(args.product_dir, Extractor.make_file_name(id))
                 extractor = Extractor(prod_path)
             elif args.api == SGLIAPIs.JASMES:
-                pl = JASMESProd(args.product)
-                extractor = Extractor(prod_path, pl)
+                row = group.iloc[0].to_dict()
+                paths = {}
+                for k in row.keys():
+                    if k.startswith("ftp_path"):
+                        paths[Extractor.extract_prod_name(k).value] = os.path.join(args.product_dir, Extractor.make_file_name(row[k]))
+                extractor = Extractor(paths)
         except:
             # move to next product if failed to open the product
             pbar.update(len(group))
@@ -213,7 +222,8 @@ def extract_csv(args:Namespace):
                 # add the pixel to the df
                 for k in pixel.keys():
                     df.loc[group.index[r], k] = pixel[k]
-            except:
+            except Exception as e:
+                print(e)
                 continue
             # update the progress bar
             pbar.set_description(f"{i+1}/{len(grouped)}:{id}###{r+1}/{len(group)}")

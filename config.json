@@ -1,11 +1,9 @@
 {
-  "operations": ["extract"],
+  "operations": ["download"],
   "args": {
-    "product": "L2R",
-    "csv": "/home/muhammad/Chla_TSM_PC_DC_data_SeaBASS_2014_2023_MainPar.csv",
-    "api": "GPORTAL",
-    "download_dir": "/home/shared/Data/SGLI/sgli-lvl2/",
-    "product_dir": "/home/shared/Data/SGLI/sgli-lvl2/",
+    "product": "NWLR_380",
+    "csv": "./test.csv",
+    "api": "JASMES",
     "no_repeat": true,
     "cred": "./cred.json"
   }

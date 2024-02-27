@@ -64,16 +64,16 @@ then
     mkdir $sc_dir -p
     cd $sc_dir
     tag=$(git ls-remote --refs --tags https://github.com/muhammads97/SGLICollect.git \
-    | cut --delimiter='/' --fields=3     \
-    | tr '-' '~'                         \
-    | sort --version-sort                \
-    | tail --lines=1 )
+    | cut -d '/' -f 3 \
+    | tr '-' '~' \
+    | sort -V \
+    | tail -n 1 )
     echo "Installing SGLICollect version=${tag}.."
     curl \
     -H 'Accept: application/vnd.github.v3.raw' \
-    -O -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/linux/SGLICollect"
+    -O -L "https://github.com/muhammads97/SGLICollect/raw/${tag}/dist/mac/SGLICollect"
 
-    chmod +x "${sc_dir}/SGLICollect"
+    chmod 755 "${sc_dir}/SGLICollect"
 
     echo "Installation completed! add (${sc_dir}) to your system path to use SGLICollect from any directory."
 fi

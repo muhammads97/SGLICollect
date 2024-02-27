@@ -18,7 +18,7 @@ from src import download, download_csv
 from src.jasmes import JASMESProd
 from src.api_types import SGLIAPIs
 from src.gportal import GportalApi, GPortalLvlProd, GPortalResolution
-from src.jasmes import JasmesApi
+from src.jasmes import JasmesCollector
 from sys import exit
 
 """
@@ -69,12 +69,11 @@ def search(args: Namespace):
         result = api.search(args.date, args.latitude, args.longitude, resolution)
         setattr(args, "download_url", result.properties.product.downloadUrl.geturl())
     elif args.api == SGLIAPIs.JASMES:
-        pl = JASMESProd(args.product)
-        api = JasmesApi(pl)
+        api = JasmesCollector()
         # send search request
         api.set_auth_details(args.cred)
         result = api.search(args.date, args.latitude, args.longitude, None)
-        setattr(args, "ftp_path", result.filePath)
+        setattr(args, "ftp_path", result.get_json())
     else: 
         print("API name is not recognized")
         exit(1)
@@ -119,8 +118,7 @@ def search_csv(args: Namespace):
         api = GportalApi(pl)
         id_key = "identifier"
     elif args.api == SGLIAPIs.JASMES:
-        pl = JASMESProd(args.product)
-        api = JasmesApi(pl)
+        api = JasmesCollector()
         api.set_auth_details(args.cred)
         id_key = "file_name"
 
@@ -151,7 +149,8 @@ def search_csv(args: Namespace):
                 # send search request 
                 result = api.search(date, lat, lon, resolution, verbose=False)
                 search_error = False
-            except:
+            except Exception as e:
+                print(e)
                 search_error = True
             if not search_error: break
 

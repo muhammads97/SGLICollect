@@ -21,8 +21,22 @@
 
 ## Installation
 
-This section explains how to download and set up SGLICollect for various environments (The stand-alone version of SGLICollect is currently under construction, also GUI will be added soon)
-### Conda
+This section explains how to download and set up SGLICollect for various environments (The GUI version of SGLICollect is currently under construction)
+
+### Stand-alone installation (Linux and MacOS only)
+
+1. Download the bash installer:
+`curl -L -o SGLICollect_installer.sh https://raw.githubusercontent.com/muhammads97/SGLICollect/main/installer.sh`
+
+2. Run the installer:
+`sh SGLICollect_installer.sh`
+
+3. Add SGLICollect to the system path
+
+Now you can use SGLICollect as follows:
+`SGLICollect --version`
+
+### Conda python installation
 
 To use SGLICollect inside a conda environment please follow the instructions in this section
 
@@ -49,6 +63,9 @@ The services provided in each mode are as follows:
 All the parameters for these services are set using the `config.json` file
 
 To run the SGLICollect, set the parameters needed in `config.json` and run:
+for the stand-alone version:
+`SGLICollect -c <path to config.json>`
+for the conda python installation:
 `python <path to SGLICollect> -c <path to config.json>`
 
 Configuration options:
@@ -82,15 +99,10 @@ Configuration options:
 5. `NWLR_530`: Water leaving radiance at 530 nm.
 6. `NWLR_565`: Water leaving radiance at 565 nm.
 7. `NWLR_670`: Water leaving radiance at 670 nm.
-8. `PAR` 
-9. `TAUA_670`         
-10. `TAUA_865`        
-11. `FAI`              
-12. `CDOM`   : Colored Dissolved Organic Matter.               
-13. `CHLA`   : Chlorophyll-a concentration.          
-14. `TSM`    : Total Suspended Matter.         
-15. `SST`    : Sea Surface Temperature.          
-16. `Cloud_probability`
+8. `CDOM`   : Colored Dissolved Organic Matter.               
+9. `CHLA`   : Chlorophyll-a concentration.          
+10. `TSM`    : Total Suspended Matter.         
+11. `SST`    : Sea Surface Temperature.          
 
 ### Credentials file
 

@@ -17,7 +17,7 @@ from io import open
 import os
 import tempfile
 
-__version__ = "1.1.2"
+__version__ = "1.2.0"
 dirs = __file__.split("/")
 dir_index = -1
 for i, d in enumerate(dirs):
@@ -78,7 +78,7 @@ parser.add_argument(
     nargs="?",
     type=SGLIAPIs,
     default=SGLIAPIs.GPORTAL,
-    help="API: GPORTAL or JASMES (Not implemented yet)",
+    help="API: GPORTAL or JASMES",
 )
 parser.add_argument(
     "-c", "--config-file", type=Path, help="provide the arguments in a json file"
@@ -141,6 +141,10 @@ if args.search:
         if args.latitude == None or args.longitude == None:
             print("latitude and longitude must be provided")
             exit(1)
+
+if args.download:
+    args.download_dir.mkdir(exist_ok=True, parents=True) # create the download directory if it doesn't exist
+    
 if args.cred == None:
     print("credentials must be provided via a json file")
     exit(1)
