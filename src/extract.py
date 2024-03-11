@@ -226,16 +226,19 @@ def extract_csv(args:Namespace):
                 print(e)
                 continue
             # update the progress bar
-            pbar.set_description(f"{i+1}/{len(grouped)}:{id}###{r+1}/{len(group)}")
+            pbar.set_description(f"{i+1}/{len(grouped)}:{id.split("/")[-1]}###{r+1}/{len(group)}")
             pbar.update()
-        # after each product is processed save the data to the csv
-        df.to_csv(args.csv, index=False)
+        # after 10 groups save csv
+        if i % 10 == 0: df.to_csv(args.csv, index=False)
 
     # finally, close the progress bar and save to the csv
     pbar.close()
+
+    # clean columns
     for c in df.columns:
         if c.startswith("Unnamed"):
             df.drop(columns=c, inplace=True)
+    # final save
     df.to_csv(args.csv, index=False)
 
 
