@@ -21,6 +21,7 @@ from tqdm import tqdm
 from src.jasmes.jasmes_types import JASMESResponse
 from src.jasmes.jasmes_cooredinates import COORDINATES
 from io import open
+import posixpath
 
 class JASMESProd(Enum):
     NWLR_380            = "NWLR_380"
@@ -101,7 +102,7 @@ class JasmesApi:
                     fileSize = size
         if file == None:
             return None
-        dir = os.path.join(self.__ftp.pwd(), file)
+        dir = posixpath.join(self.__ftp.pwd(), file)
         return JASMESResponse(file, COORDINATES[box_id], fileSize, dir)
         
         
