@@ -229,14 +229,14 @@ def extract_csv(args:Namespace):
             pbar.set_description(f"{i+1}/{len(grouped)}:{id}###{r+1}/{len(group)}")
             pbar.update()
         # after each product is processed save the data to the csv
-        df.to_csv(args.csv)
+        df.to_csv(args.csv, index=False)
 
     # finally, close the progress bar and save to the csv
     pbar.close()
     for c in df.columns:
         if c.startswith("Unnamed"):
             df.drop(columns=c, inplace=True)
-    df.to_csv(args.csv)
+    df.to_csv(args.csv, index=False)
 
 
 
