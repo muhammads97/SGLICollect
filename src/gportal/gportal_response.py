@@ -88,7 +88,7 @@ class GPortalResponse:
         except:
             df = None
         df = self.to_dataframe(df)
-        df.to_csv(path)
+        df.to_csv(path, index=False)
         return df
     def print(self):
         """
