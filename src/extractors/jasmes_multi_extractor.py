@@ -13,7 +13,7 @@ from src.extractors.extractor_interface import Extractor
 from src.extractors.jasmes_extractor import JASMESExtractor
 import numpy as np
 from netCDF4 import Dataset
-from src.jasmes.jasmes_api import JASMESProd
+from src.jasmes.jasmes_api import JASMESInternalProd
 
 '''
     NWLR_380            = "NWLR_380"
@@ -44,7 +44,7 @@ class JASMESMultiExtractor(Extractor):
     def get_pixel(self, lat:float, lon:float) -> dict:
         result = {}
         for k in self.__paths.keys():
-            prod = JASMESProd(k)
+            prod = JASMESInternalProd(k)
             extractor = JASMESExtractor(self.__paths[k], prod)
             pixel = extractor.get_pixel(lat, lon)
             result.update(pixel)
@@ -52,4 +52,4 @@ class JASMESMultiExtractor(Extractor):
 
     @classmethod
     def extract_prod_name(self, key:str) -> str:
-        return JASMESProd(key[9:])
+        return JASMESInternalProd(key[9:])

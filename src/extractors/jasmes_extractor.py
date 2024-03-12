@@ -9,13 +9,13 @@
 #
 
 from pathlib import Path
-from src.jasmes import JASMESProd
+from src.jasmes import JASMESInternalProd
 from src.extractors.extractor_interface import Extractor
 import numpy as np
 from netCDF4 import Dataset
 
 class JASMESExtractor(Extractor):
-    def __init__(self, path: Path, prod:JASMESProd):
+    def __init__(self, path: Path, prod:JASMESInternalProd):
         self.__prod = prod
         self.__nc = Dataset(path, "r")
 

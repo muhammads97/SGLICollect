@@ -8,19 +8,20 @@
 # The research was mainly supervised by Professor Salem Ibrahim Salem.
 #
 
+from enum import Enum
 import json
 from pathlib import Path
-from src.jasmes.jasmes_api import JASMESProd, JasmesApi
+from src.jasmes.jasmes_api import JASMESInternalProd, JasmesApi
 from src.jasmes.jasmes_types.jasmes_collection import JASMESCollection
-from argparse import Namespace
+from tqdm import tqdm
 
 class JasmesCollector(JasmesApi):
     def __init__(self):
-        super().__init__(JASMESProd.NWLR_380)         
+        super().__init__()         
 
     def search(self, date: str, latitude: float, longitude: float, resolution=None, verbose: bool = True):
             # NWLR
-            super().set_prod(JASMESProd.NWLR_380)
+            super().set_prod(JASMESInternalProd.NWLR_380)
             res = super().search(date, latitude, longitude, resolution, verbose)
             if res == None:
                  return None
@@ -32,7 +33,7 @@ class JasmesCollector(JasmesApi):
             ftp_path_NWLR_565 = ftp_path_NWLR_380.replace("NWLR_380", "NWLR_565")
             ftp_path_NWLR_670 = ftp_path_NWLR_380.replace("NWLR_380", "NWLR_670")
             # CDOM, Chla, TSM
-            super().set_prod(JASMESProd.CDOM)
+            super().set_prod(JASMESInternalProd.CDOM)
             res = super().search(date, latitude, longitude, resolution, verbose)
             if res == None:
                  return None
@@ -40,7 +41,7 @@ class JasmesCollector(JasmesApi):
             ftp_path_CHLA = ftp_path_CDOM.replace("CDOM", "CHLA")
             ftp_path_TSM = ftp_path_CDOM.replace("CDOM", "TSM")
             # SST
-            super().set_prod(JASMESProd.SST)
+            super().set_prod(JASMESInternalProd.SST)
             res = super().search(date, latitude, longitude, resolution, verbose)
             if res == None:
                  return None
@@ -60,8 +61,13 @@ class JasmesCollector(JasmesApi):
                 ftp_path_SST,
                 )
     def download(self, ftp_paths: dict, output_dir: Path) -> Path:
+        pbar = tqdm(total=11, unit="files")
         paths = {}
         for k in ftp_paths.keys():
+            pbar.set_description(f"{ftp_paths[k].split('/')[-1]}")
             path = super().download(ftp_paths[k], output_dir)
             paths[k] = str(path)
+            pbar.update(1)
+        pbar.close()
+
         return json.dumps(paths)

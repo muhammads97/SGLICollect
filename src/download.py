@@ -14,7 +14,6 @@ import json
 
 from src.api_types import SGLIAPIs
 from src.gportal import GPortalLvlProd, GportalApi
-from src.jasmes import JasmesApi, JASMESProd
 from src.extract import extract, extract_csv
 import pandas as pd
 from sys import exit
@@ -107,7 +106,7 @@ def download_csv(args: Namespace):
     df =df.groupby(group_key) # only download uniqe urls
 
     for i, (url, g) in enumerate(df):
-        print(f"> {i+1}/{len(df)}", end=": ") # progress indicator 
+        print(f"> {i+1}/{len(df)}", end=": \n") # progress indicator 
         if args.api == SGLIAPIs.JASMES:
             row = g.iloc[0].to_dict()
             paths = {}

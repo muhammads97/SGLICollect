@@ -8,5 +8,5 @@
 # The research was mainly supervised by Professor Salem Ibrahim Salem.
 #
 
-from src.jasmes.jasmes_api import JasmesApi, JASMESProd, JASMESResponse
+from src.jasmes.jasmes_api import JasmesApi, JASMESInternalProd, JASMESResponse
 from src.jasmes.jasmes_collector import JasmesCollector, JASMESCollection

@@ -10,7 +10,7 @@
 
 from src import SGLIAPIs
 from src.gportal import GportalApi, GPortalLvlProd, GPortalResponse, GPortalResolution
-from src.jasmes import JasmesApi, JASMESProd, JASMESResponse
+from src.jasmes import JasmesApi, JASMESInternalProd, JASMESResponse
 from src.extractors import JASMESExtractor, GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor
 from src.args import args
 from src.download import download, download_csv
