@@ -19,7 +19,6 @@ from tqdm import tqdm
 
 from src.extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor, JASMESExtractor
 from src.extractors.jasmes_multi_extractor import JASMESMultiExtractor
-from src.jasmes import JASMESProd
 from src.gportal import GPortalLvlProd
 from src.api_types import SGLIAPIs
 from sys import exit
@@ -226,7 +225,7 @@ def extract_csv(args:Namespace):
                 print(e)
                 continue
             # update the progress bar
-            pbar.set_description(f"{i+1}/{len(grouped)}:{id.split("/")[-1]}###{r+1}/{len(group)}")
+            pbar.set_description(f"{i+1}/{len(grouped)}:{id.split('/')[-1]}###{r+1}/{len(group)}")
             pbar.update()
         # after 10 groups save csv
         if i % 10 == 0: df.to_csv(args.csv, index=False)

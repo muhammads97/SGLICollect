@@ -23,7 +23,7 @@ from src.jasmes.jasmes_cooredinates import COORDINATES
 from io import open
 import posixpath
 
-class JASMESProd(Enum):
+class JASMESInternalProd(Enum):
     NWLR_380            = "NWLR_380"
     NWLR_412            = "NWLR_412"
     NWLR_443            = "NWLR_443"
@@ -39,18 +39,16 @@ class JASMESProd(Enum):
 class JasmesApi:
     __logged_in = False
     __ftp: FTP
-    def __init__(self, type: JASMESProd):
+    def __init__(self, verbose: bool=False):
         """
         API to talk to JASMES FTP server 
-
-        :type JASMESProd
         """
-
-        self.__prod = type
         self.__ftp = FTP("apollo.eorc.jaxa.jp")
+        self.verbose = verbose
 
-    def set_prod(self, prod: JASMESProd):
+    def set_prod(self, prod: JASMESInternalProd):
         self.__prod = prod
+    
     def set_auth_details(self, cred:Path):
         """
         sets the account and password for using for download functionality.
@@ -122,15 +120,17 @@ class JasmesApi:
         self.__ftp.voidcmd("TYPE I")
         size = self.__ftp.size(file_name)
         nblocks = (size // 8192) + (size % 8192 != 0)
-        self.__pbar = tqdm(total=nblocks, unit="block")
-        self.__pbar.set_description(f"{file_name}")
+        if self.verbose:
+            self.__pbar = tqdm(total=nblocks, unit="block")
+            self.__pbar.set_description(f"{file_name}")
         # don't download if file already exists
         output_file = Path(os.path.join(output_dir, file_name))
         if output_file.exists():
             stats = os.stat(output_file)
             if stats.st_size == size:
-                self.__pbar.update(nblocks)
-                self.__pbar.close()
+                if self.verbose:
+                    self.__pbar.update(nblocks)
+                    self.__pbar.close()
                 return output_file
             
         self.__output = open(output_file, "wb")
@@ -144,31 +144,32 @@ class JasmesApi:
         self.__ftp.quit()
 
     def __download_callback(self, data:bytes)->object:
-        self.__pbar.update(1)
+        if self.verbose:
+            self.__pbar.update(1)
         return self.__output.write(data)
 
     def __go_to_product_directory(self)->bool:
-        if self.__prod == JASMESProd.NWLR_380:
+        if self.__prod == JASMESInternalProd.NWLR_380:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_380")
-        elif self.__prod == JASMESProd.NWLR_412:
+        elif self.__prod == JASMESInternalProd.NWLR_412:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_412")
-        elif self.__prod == JASMESProd.NWLR_443:
+        elif self.__prod == JASMESInternalProd.NWLR_443:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_443")
-        elif self.__prod == JASMESProd.NWLR_490:
+        elif self.__prod == JASMESInternalProd.NWLR_490:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_490")
-        elif self.__prod == JASMESProd.NWLR_530:
+        elif self.__prod == JASMESInternalProd.NWLR_530:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_530")
-        elif self.__prod == JASMESProd.NWLR_565:
+        elif self.__prod == JASMESInternalProd.NWLR_565:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_565")
-        elif self.__prod == JASMESProd.NWLR_670:
+        elif self.__prod == JASMESInternalProd.NWLR_670:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Ocean_atmospheric_correction/NWLR_670")
-        elif self.__prod == JASMESProd.CHLA:
+        elif self.__prod == JASMESInternalProd.CHLA:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_In-water_properties/CHLA")
-        elif self.__prod == JASMESProd.CDOM:
+        elif self.__prod == JASMESInternalProd.CDOM:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_In-water_properties/CDOM")
-        elif self.__prod == JASMESProd.TSM:
+        elif self.__prod == JASMESInternalProd.TSM:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_In-water_properties/TSM")
-        elif self.__prod == JASMESProd.SST:
+        elif self.__prod == JASMESInternalProd.SST:
             response = self.__ftp.cwd("/pub/SGLI_NRT/L2_Thermal_analysis/SST")
         else:
             print("Product %s is not supported yet.."%self.__prod.value)

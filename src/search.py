@@ -15,7 +15,6 @@ import numpy as np
 from tqdm import tqdm
 import time
 from src import download, download_csv
-from src.jasmes import JASMESProd
 from src.api_types import SGLIAPIs
 from src.gportal import GportalApi, GPortalLvlProd, GPortalResolution
 from src.jasmes import JasmesCollector
@@ -164,9 +163,6 @@ def search_csv(args: Namespace):
         # save to csv every 100 row
         if (i % 100 == 0): df.to_csv(args.csv, index=False)
 
-    for c in df.columns:
-        if c.startswith("Unnamed"):
-            df.drop(columns=c, inplace=True)
     df.to_csv(args.csv, index=False) # save to csv
     pbar.close()
 
