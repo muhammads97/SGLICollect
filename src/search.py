@@ -11,14 +11,12 @@
 
 from argparse import Namespace
 import pandas as pd
-import numpy as np
 from tqdm import tqdm
 import time
-from src import download, download_csv
+from src import download
 from src.api_types import SGLIAPIs
 from src.gportal import GportalApi, GPortalLvlProd, GPortalResolution
 from src.jasmes import JasmesCollector
-from sys import exit
 
 """
 Utility function to get the value from a dict and validate it
@@ -46,46 +44,7 @@ def fill_group(df, g, api):
             df.loc[df.index[g.index[j]], "ftp_path"] = g.iloc[0]["ftp_path"]
             df.loc[df.index[g.index[j]], "box_id"] = g.iloc[0]["box_id"]
 
-
-
 def search(args: Namespace):
-    """
-    Search a single instance and print the result to the terminal
-    arguments provided through json file or cmdline arguments:
-        - api: GPORTAL or JASMES, default: GPORTAL
-        - product: GPortal Products or Jasmes Products
-        - date: string date
-        - latitude
-        - longitude
-        - resolution: str(250m or 1km) or int(250 or 1000)
-    """
-    # selecting which API
-    if args.api == SGLIAPIs.GPORTAL:
-        pl = GPortalLvlProd(args.product)
-        api = GportalApi(pl)
-        # send search request
-        resolution = GPortalResolution.from_str(args.resolution)
-        result = api.search(args.date, args.latitude, args.longitude, resolution)
-        setattr(args, "download_url", result.properties.product.downloadUrl.geturl())
-    elif args.api == SGLIAPIs.JASMES:
-        api = JasmesCollector()
-        # send search request
-        api.set_auth_details(args.cred)
-        result = api.search(args.date, args.latitude, args.longitude, None)
-        setattr(args, "ftp_path", result.get_json())
-    else: 
-        print("API name is not recognized")
-        exit(1)
-
-    # print results
-    print("returned results: ")
-    result.print()
-
-    # if download option is set, call the download function
-    if args.download:
-        download(args)
-
-def search_csv(args: Namespace):
     """
     Bulk search operation using csv file
     arguments provided through json file or cmdline arguments:
@@ -168,6 +127,6 @@ def search_csv(args: Namespace):
 
     # move to download option if download is set
     if args.download:
-        download_csv(args)
+        download(args)
         
 

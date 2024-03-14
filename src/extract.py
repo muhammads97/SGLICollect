@@ -10,97 +10,17 @@
 
 
 from argparse import Namespace
-import json
 import os
-
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
-
-from src.extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor, JASMESExtractor
+from src.extractors import GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor
 from src.extractors.jasmes_multi_extractor import JASMESMultiExtractor
 from src.gportal import GPortalLvlProd
 from src.api_types import SGLIAPIs
 from sys import exit
 
 def extract(args:Namespace):
-    """
-    Extracts a pixel from a single product and prints the result to the terminal.
-
-    arguments provided through json file or cmdline arguments:
-        - api: GPORTAL or JASMES, default: GPORTAL
-        - product: L1B, L2R, or L2P
-        - product_path: Path to the product to extract from
-        - latitude
-        - longitude
-
-    Output depends on the level and product:
-        - L1B:
-            - Rt11: Reflectance at band 11  
-            - Rt10: Reflectance at band 10  
-            - Rt09: Reflectance at band 09  
-            - Rt08: Reflectance at band 08  
-            - Rt07: Reflectance at band 07  
-            - Rt06: Reflectance at band 06  
-            - Rt05: Reflectance at band 05  
-            - Rt04: Reflectance at band 04  
-            - Rt03: Reflectance at band 03  
-            - Rt02: Reflectance at band 02   
-            - Rt01: Reflectance at band 01
-            - Lt11: Radiance at band 11
-            - Lt10: Radiance at band 10
-            - Lt09: Radiance at band 09
-            - Lt08: Radiance at band 08
-            - Lt07: Radiance at band 07
-            - Lt06: Radiance at band 06
-            - Lt05: Radiance at band 05
-            - Lt04: Radiance at band 04
-            - Lt03: Radiance at band 03
-            - Lt02: Radiance at band 02
-            - Lt01: Radiance at band 01
-            - land: percentage of land in the pixel
-        - L2R:
-            - Rrs_670: Remote sensing reflectance at wavelength 670 nm
-            - Rrs_565: Remote sensing reflectance at wavelength 565 nm
-            - Rrs_530: Remote sensing reflectance at wavelength 530 nm
-            - Rrs_490: Remote sensing reflectance at wavelength 490 nm
-            - Rrs_443: Remote sensing reflectance at wavelength 443 nm
-            - Rrs_412: Remote sensing reflectance at wavelength 412 nm
-            - Rrs_380: Remote sensing reflectance at wavelength 380 nm
-        - L2P:
-            - Chla      : Chlorophyll-a concentration using JAXA's Standard Chla Algorithm for GPortal (mg/m3)
-            - aCDOM_412 : absorption of Colored Desolved Organic Matter at wavelength 412 nm (1/m)
-            - TSM       : Total Suspended Matter (g/m3)
-    """
-
-    if args.product_path == None:
-        print("product_path must be set")
-        exit(1)
-    # select the apropriate extractor
-    # and provide the product path
-    if args.api == SGLIAPIs.GPORTAL:
-        p = GPortalLvlProd(args.product)
-        if p == GPortalLvlProd.L1B:
-            extractor = GPortalL1BExtractor(args.product_path)
-        elif p == GPortalLvlProd.L2R:
-            extractor = GPortalL2RExtractor(args.product_path)
-        elif p == GPortalLvlProd.L2P:
-            extractor = GPortalL2PExtractor(args.product_path)
-        else:
-            print("level or product not supported yet")
-            exit(1)
-    else:
-        prod_paths = json.loads(str(args.product_path))
-        extractor = JASMESMultiExtractor(prod_paths)
-
-    # get pixel information
-    pixel = extractor.get_pixel(args.latitude, args.longitude)
-    # print pixel information 
-    print("===> pixel information:")
-    for k in pixel.keys():
-        print(f"{k}: {pixel[k]}")
-
-def extract_csv(args:Namespace):
     """
     Bulk extract operation using csv file
     arguments provided through json file or cmdline arguments:

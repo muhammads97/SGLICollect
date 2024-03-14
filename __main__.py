@@ -9,19 +9,16 @@
 #
 
 from src.args import args
-from src.download import download, download_csv
-from src.search import search, search_csv
-from src.extract import extract, extract_csv
+from src.download import download
+from src.search import search
+from src.extract import extract
 from src.utils import empty_temp
 
 if __name__ == "__main__":
     if args.search:
-        if args.csv: search_csv(args)
-        else:        search(args)
+        search(args)
     elif args.download:
-        if args.csv: download_csv(args)
-        else:        download(args)
+        download(args)
     elif args.extract:
-        if args.csv: extract_csv(args)
-        else:        extract(args)
+        extract(args)
     empty_temp()
