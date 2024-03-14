@@ -8,5 +8,8 @@
 # The research was mainly supervised by Professor Salem Ibrahim Salem.
 #
 
-from src.gportal.gportal_api import GportalApi, GPortalLvlProd, GPortalResponse
-from src.gportal.gportal_types import GPortalGeo, GPortalProperties, GPortalResolution
+from src.gportal.gportal_api import GportalApi, GPortalLvlProd
+from src.gportal.gportal_types.gportal_geo import GPortalGeo
+from src.gportal.gportal_types.gportal_props import GPortalProperties
+from src.gportal.gportal_types.gportal_resolution import GPortalResolution
+from src.gportal.gportal_response import GPortalResponse

@@ -10,7 +10,6 @@
 
 import requests
 import json
-import numpy as np
 from enum import Enum
 
 from src.gportal.gportal_response import GPortalResponse, GPortalSearchResult

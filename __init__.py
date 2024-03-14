@@ -13,7 +13,7 @@ from src.gportal import GportalApi, GPortalLvlProd, GPortalResponse, GPortalReso
 from src.jasmes import JasmesApi, JASMESInternalProd, JASMESResponse
 from src.extractors import JASMESExtractor, GPortalL1BExtractor, GPortalL2PExtractor, GPortalL2RExtractor
 from src.args import args
-from src.download import download, download_csv
-from src.search import search, search_csv
-from src.extract import extract, extract_csv
+from src.download import download
+from src.search import search
+from src.extract import extract
 from src.utils import empty_temp

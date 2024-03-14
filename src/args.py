@@ -53,25 +53,11 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--date", nargs="?", help="sample date format: yyyy/mm/dd", type=str
-)
-parser.add_argument(
     "-p",
     "--product",
     nargs="?",
-    help="'L1B' for level 1, 'L2R' for level 2 NWLR (Rrs), or 'L2P' for level 2 IWLR (Chla, etc)",
+    help="'L1B' for level 1, 'L2R' for level 2 NWLR (Rrs), 'L2P' for level 2 IWLR (Chla, etc), or 'ALL' for JASMES",
     type=str,
-    default="L1B",
-)
-parser.add_argument("-lat", "--latitude", nargs="?", help="Latitude", type=float)
-parser.add_argument("-lon", "--longitude", nargs="?", help="Longitude", type=float)
-parser.add_argument(
-    "-r",
-    "--resolution",
-    nargs="?",
-    type=str,
-    default="250m",
-    help="resolution for GPortal (250m or 1000m)",
 )
 parser.add_argument(
     "--api",
@@ -103,15 +89,13 @@ parser.add_argument(
     default=TEMP_FOLDER,
     help="directory path of the download location",
 )
-parser.add_argument("--download-url", type=str, help="url of product to download")
-parser.add_argument(
-    "--ftp-path", type=str, help="path of product to download on the ftp server"
-)
-parser.add_argument("--product-path", type=Path, help="product path for extract option")
 parser.add_argument(
     "--product-dir", type=Path, help="directory containing products to extract"
 )
 args, _ = parser.parse_known_args()
+
+def is_valid_GPortalLvlProd(prod: str):
+    return prod == "L1B" or prod == "L2R" or prod == "L2P"
 
 if args.config_file:
     f = open(args.config_file)
@@ -122,25 +106,22 @@ if args.config_file:
     for k in config["args"].keys():
         if not isinstance(getattr(args, k), type(None)):
             setattr(args, k, type(getattr(args, k))(config["args"][k]))
-        else:  #
-            # Created on Sat Dec 16 2023
-            #
-            # Copyright (c) 2023 Your Company
-            #
-
+        else:
             setattr(args, k, config["args"][k])
+
 if not args.search and not args.download and not args.extract:
     print("No option provided!")
     parser.print_help()
     exit(1)
-if args.search:
-    if not args.csv:
-        if args.date == None:
-            print("date must be provided")
-            exit(1)
-        if args.latitude == None or args.longitude == None:
-            print("latitude and longitude must be provided")
-            exit(1)
+
+if args.api == SGLIAPIs.GPORTAL:
+    if not is_valid_GPortalLvlProd(args.product):
+        print("Invalid Product value for GPortal")
+        exit(1)
+
+if not args.csv:
+    print("Data must be provided using csv")
+    exit(1)
 
 if args.download:
     args.download_dir.mkdir(exist_ok=True, parents=True) # create the download directory if it doesn't exist
@@ -148,8 +129,3 @@ if args.download:
 if args.cred == None:
     print("credentials must be provided via a json file")
     exit(1)
-if args.extract:
-    if not args.csv:
-        if args.latitude == None or args.longitude == None:
-            print("latitude and longitude must be provided")
-            exit(1)
