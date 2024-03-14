@@ -1,0 +1,12 @@
+{
+  "operations": ["search", "download", "extract"],
+  "args": {
+    "product": "ALL",
+    "csv": "D:/Data/in-situ-data.csv",
+    "api": "JASMES",
+    "download_dir": "D:/Data/SGLI/JASMES/rrs/",
+    "product_dir": "D:/Data/SGLI/JASMES/rrs/",
+    "no_repeat": true,
+    "cred": "C:/Users/guest/Credential_JASMES.json"
+  }
+}
