@@ -53,7 +53,7 @@ class GPortalL2RExtractor(Extractor):
         flags = {}
         order = 0
         while order < 15:
-            flags[self.__FLAGS[order]] = flags_value % 2
+            flags[self.__FLAGS[order]+"_GPROTAL"] = flags_value % 2
             flags_value //= 2
             order += 1
         return flags
@@ -66,13 +66,13 @@ class GPortalL2RExtractor(Extractor):
 
         flags = self.__calculate_flags(self._h5["Image_data/QA_flag"][row, col])
         pixel = {
-            "Rrs_380": self.__digital_number_to_rrs("Rrs_380")[row, col],
-            "Rrs_412": self.__digital_number_to_rrs("Rrs_412")[row, col],
-            "Rrs_443": self.__digital_number_to_rrs("Rrs_443")[row, col],
-            "Rrs_490": self.__digital_number_to_rrs("Rrs_490")[row, col],
-            "Rrs_530": self.__digital_number_to_rrs("Rrs_530")[row, col],
-            "Rrs_565": self.__digital_number_to_rrs("Rrs_565")[row, col],
-            "Rrs_670": self.__digital_number_to_rrs("Rrs_670")[row, col],
+            "Rrs_380_GPORTAL": self.__digital_number_to_rrs("Rrs_380")[row, col],
+            "Rrs_412_GPORTAL": self.__digital_number_to_rrs("Rrs_412")[row, col],
+            "Rrs_443_GPORTAL": self.__digital_number_to_rrs("Rrs_443")[row, col],
+            "Rrs_490_GPORTAL": self.__digital_number_to_rrs("Rrs_490")[row, col],
+            "Rrs_530_GPORTAL": self.__digital_number_to_rrs("Rrs_530")[row, col],
+            "Rrs_565_GPORTAL": self.__digital_number_to_rrs("Rrs_565")[row, col],
+            "Rrs_670_GPORTAL": self.__digital_number_to_rrs("Rrs_670")[row, col],
         }
         pixel.update(flags)
         return pixel

@@ -52,7 +52,7 @@ class GPortalL2PExtractor(Extractor):
         flags = {}
         order = 0
         while order < 15:
-            flags[self.__FLAGS[order]] = flags_value % 2
+            flags[self.__FLAGS[order]+"_GPORTAL"] = flags_value % 2
             flags_value //= 2
             order += 1
         return flags
@@ -63,9 +63,9 @@ class GPortalL2PExtractor(Extractor):
         # print("=> matching point with distance^2 = %f" % (distance))
         flags = self.__calculate_flags(self._h5["Image_data/QA_flag"][row, col])
         pixel = {
-            "Chla": self.__digital_number_to_prod("Chla")[row, col],
-            "aCDOM_412": self.__digital_number_to_prod("CDOM")[row, col],
-            "TSM": self.__digital_number_to_prod("TSM")[row, col],
+            "Chla_GPORTAL": self.__digital_number_to_prod("Chla")[row, col],
+            "aCDOM_412_GPORTAL": self.__digital_number_to_prod("CDOM")[row, col],
+            "TSM_GPORTAL": self.__digital_number_to_prod("TSM")[row, col],
         }
         pixel.update(flags)
         return pixel

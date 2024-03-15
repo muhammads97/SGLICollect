@@ -150,55 +150,62 @@ No updates to the CSV, the files will be downloaded either in the specified down
 ##### Extract output (GPORTAL):
 
 1. L1B:
-    - Rt11: Reflectance at band 11  
-    - Rt10: Reflectance at band 10  
-    - Rt09: Reflectance at band 09  
-    - Rt08: Reflectance at band 08  
-    - Rt07: Reflectance at band 07  
-    - Rt06: Reflectance at band 06  
-    - Rt05: Reflectance at band 05  
-    - Rt04: Reflectance at band 04  
-    - Rt03: Reflectance at band 03  
-    - Rt02: Reflectance at band 02   
-    - Rt01: Reflectance at band 01
-    - Lt11: Radiance at band 11
-    - Lt10: Radiance at band 10
-    - Lt09: Radiance at band 09
-    - Lt08: Radiance at band 08
-    - Lt07: Radiance at band 07
-    - Lt06: Radiance at band 06
-    - Lt05: Radiance at band 05
-    - Lt04: Radiance at band 04
-    - Lt03: Radiance at band 03
-    - Lt02: Radiance at band 02
-    - Lt01: Radiance at band 01
-    - land: percentage of land in the pixel
+    - Rt11_GPORTAL: Reflectance at band 11  
+    - Rt10_GPORTAL: Reflectance at band 10  
+    - Rt09_GPORTAL: Reflectance at band 09  
+    - Rt08_GPORTAL: Reflectance at band 08  
+    - Rt07_GPORTAL: Reflectance at band 07  
+    - Rt06_GPORTAL: Reflectance at band 06  
+    - Rt05_GPORTAL: Reflectance at band 05  
+    - Rt04_GPORTAL: Reflectance at band 04  
+    - Rt03_GPORTAL: Reflectance at band 03  
+    - Rt02_GPORTAL: Reflectance at band 02   
+    - Rt01_GPORTAL: Reflectance at band 01
+    - Lt11_GPORTAL: Radiance at band 11
+    - Lt10_GPORTAL: Radiance at band 10
+    - Lt09_GPORTAL: Radiance at band 09
+    - Lt08_GPORTAL: Radiance at band 08
+    - Lt07_GPORTAL: Radiance at band 07
+    - Lt06_GPORTAL: Radiance at band 06
+    - Lt05_GPORTAL: Radiance at band 05
+    - Lt04_GPORTAL: Radiance at band 04
+    - Lt03_GPORTAL: Radiance at band 03
+    - Lt02_GPORTAL: Radiance at band 02
+    - Lt01_GPORTAL: Radiance at band 01
+    - land_GPORTAL: percentage of land in the pixel
 2. L2R:
-    - Rrs_670: Remote sensing reflectance at wavelength 670 nm
-    - Rrs_565: Remote sensing reflectance at wavelength 565 nm
-    - Rrs_530: Remote sensing reflectance at wavelength 530 nm
-    - Rrs_490: Remote sensing reflectance at wavelength 490 nm
-    - Rrs_443: Remote sensing reflectance at wavelength 443 nm
-    - Rrs_412: Remote sensing reflectance at wavelength 412 nm
-    - Rrs_380: Remote sensing reflectance at wavelength 380 nm
+    - Rrs_670_GPORTAL: Remote sensing reflectance at wavelength 670 nm
+    - Rrs_565_GPORTAL: Remote sensing reflectance at wavelength 565 nm
+    - Rrs_530_GPORTAL: Remote sensing reflectance at wavelength 530 nm
+    - Rrs_490_GPORTAL: Remote sensing reflectance at wavelength 490 nm
+    - Rrs_443_GPORTAL: Remote sensing reflectance at wavelength 443 nm
+    - Rrs_412_GPORTAL: Remote sensing reflectance at wavelength 412 nm
+    - Rrs_380_GPORTAL: Remote sensing reflectance at wavelength 380 nm
 3. L2P:
-    - Chla      : Chlorophyll-a concentration using JAXA's Standard Chla Algorithm for GPortal (mg/m3)
-    - aCDOM_412 : absorption of Colored Dissolved Organic Matter at wavelength 412 nm (1/m)
-    - TSM       : Total Suspended Matter (g/m3)
+    - Chla_GPORTAL      : Chlorophyll-a concentration using JAXA's Standard Chla Algorithm for GPortal (mg/m3)
+    - aCDOM_412_GPORTAL : absorption of Colored Dissolved Organic Matter at wavelength 412 nm (1/m)
+    - TSM_GPORTAL       : Total Suspended Matter (g/m3)
 
 
 ##### Extract output (JASMES):
-1. NWLR_380
-2. NWLR_412
-3. NWLR_443
-4. NWLR_490
-5. NWLR_530
-6. NWLR_565
-7. NWLR_670
-8. CDOM
-9. CHLA
-10. TSM
-11. SST
+1. NWLR_380_JASMES
+2. NWLR_412_JASMES
+3. NWLR_443_JASMES
+4. NWLR_490_JASMES
+5. NWLR_530_JASMES
+6. NWLR_565_JASMES
+7. NWLR_670_JASMES
+8. Rrs_380_JASMES
+9. Rrs_412_JASMES
+10. Rrs_443_JASMES
+11. Rrs_490_JASMES
+12. Rrs_530_JASMES
+13. Rrs_565_JASMES
+14. Rrs_670_JASMES
+15. CDOM_JASMES
+16. CHLA_JASMES
+17. TSM_JASMES
+18. SST_JASMES
 
 ### Example usage (single-entry)
 
