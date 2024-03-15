@@ -51,16 +51,18 @@ To use SGLICollect inside a conda environment please follow the instructions in 
 
 ## Usage
 
-The SGLICollect can be used in two modes:
-1. Single-entry processing
-2. Bulk processing using CSV
+The SGLICollect operates using a JSON configuration file and a CSV file.
 
-The services provided in each mode are as follows:
+The services provided are as follows:
 1. Search (using latitude, longitude, and date)
 2. Download (using product URL)
 3. Extract (using product directory, latitude, and longitude)
 
-All the parameters for these services are set using the `config.json` file
+<img width="1088" alt="Screenshot 2024-03-15 at 13 55 35" src="https://github.com/muhammads97/SGLICollect/assets/33841931/cbf02c2b-70a9-48d3-b97b-320eeda2548f">
+
+<img width="1089" alt="Screenshot 2024-03-15 at 13 53 37" src="https://github.com/muhammads97/SGLICollect/assets/33841931/78b60009-5902-4622-a032-6f162bfe2fc5">
+
+All the parameters for these services are set using the JSON configuration file and the CSV file
 
 To run the SGLICollect, set the parameters needed in `config.json` and run:
 for the stand-alone version:
@@ -72,15 +74,11 @@ Configuration options:
 1. `operations`: an array of the operations that will be performed, the available options are: `search`, `download`, and `extract`.
 2. `args`: an object containing the arguments to be used for these operations:
     - `product`      : satellite product, please refer to the [list of products](#list-of-products).
-    - `latitude`     : used for a single-entry mode.
-    - `longitude`    : used for a single-entry mode.
-    - `date`         : used for a single-entry mode.
     - `csv`          : a path to a CSV file for bulk processing mode. (This will override the parameters provided for single-entry mode), refer to [CSV file format](#csv-file-format).
     - `api`          : `GPORTAL` or `JASMES` (Default: `GPORTAL`).
     - `download_dir` : Download directory (for both single-entry and bulk-processing). If not provided, the files will be downloaded in the temp directory and they will be deleted once the processing ends.
     - `cred`         : path to JSON file containing account and password (refer to [Credentials file](#credentials-file)).
     - `product_dir`  : directory of all products used for the extraction step for bulk-processing mode.
-    - `product_path` : path for a single product to extract from, used in the single-entry mode.
     - `no_repeat`    : `true` or `false`. Used for search and download, if the entry already exists in the CSV or the file is already downloaded the operation will be skipped. (default: false)
 
 
@@ -92,17 +90,18 @@ Configuration options:
 3. `L2R`: Level 2 Remote Sensing Reflectance from GPortal.
 
 #### JASMES
-1. `NWLR_380`: Water leaving radiance at 380 nm.
-2. `NWLR_412`: Water leaving radiance at 412 nm.
-3. `NWLR_443`: Water leaving radiance at 443 nm.
-4. `NWLR_490`: Water leaving radiance at 490 nm.
-5. `NWLR_530`: Water leaving radiance at 530 nm.
-6. `NWLR_565`: Water leaving radiance at 565 nm.
-7. `NWLR_670`: Water leaving radiance at 670 nm.
-8. `CDOM`   : Colored Dissolved Organic Matter.               
-9. `CHLA`   : Chlorophyll-a concentration.          
-10. `TSM`    : Total Suspended Matter.         
-11. `SST`    : Sea Surface Temperature.          
+1. `ALL`: All JASMES Products will be obtained:
+    - NWLR_380
+    - NWLR_412
+    - NWLR_443
+    - NWLR_490
+    - NWLR_530
+    - NWLR_565
+    - NWLR_670
+    - CDOM
+    - CHLA
+    - TSM
+    - SST          
 
 ### Credentials file
 
@@ -133,14 +132,11 @@ Example:
     - preview_url
     - cloud_coverage (%)
 2. Output columns for JASMES:
-    - ftp_path
-    - file_name
-    - file_size
-    - box_id
+    - ftp_path_<product> (example: ftp_path_CDOM)
 
 #### For Download:
 
-1. download_url (GPortal)/ftp_path (JASMES)
+1. download_url (GPortal)/ftp_path_<product> (JASMES)
 
 ##### Download output:
 
@@ -148,7 +144,7 @@ No updates to the CSV, the files will be downloaded either in the specified down
 
 #### For Extract:
 
-1. identifier (GPortal)/ file_name (JASMES)
+1. identifier (GPortal)/ ftp_path_<product> (JASMES)
 2. lat
 3. lon
 
@@ -193,8 +189,17 @@ No updates to the CSV, the files will be downloaded either in the specified down
 
 
 ##### Extract output (JASMES):
-
-The output column is the same as the product name.
+1. NWLR_380
+2. NWLR_412
+3. NWLR_443
+4. NWLR_490
+5. NWLR_530
+6. NWLR_565
+7. NWLR_670
+8. CDOM
+9. CHLA
+10. TSM
+11. SST
 
 ### Example usage (single-entry)
 
