@@ -71,11 +71,11 @@ class JASMESExtractor(Extractor):
         row, col = self.__find_entry(lat_mat, lon_mat, lat, lon)
         if str(self.__prod.value).startswith("NWL"):
             pixel = {
-                f"{str(self.__prod.value)}": self.__handle_digital_number()[row, col],
-                f"{str(self.__prod.value).replace('NWLR', 'Rrs')}": self.__handle_digital_number(rrs=True)[row, col]
+                f"{str(self.__prod.value)}_JASMES": self.__handle_digital_number()[row, col],
+                f"{str(self.__prod.value).replace('NWLR', 'Rrs')}_JASMES": self.__handle_digital_number(rrs=True)[row, col]
             }
         else:
             pixel = {
-                f"{str(self.__prod.value)}": self.__handle_digital_number()[row, col],
+                f"{str(self.__prod.value)}_JASMES": self.__handle_digital_number()[row, col],
             }
         return pixel
