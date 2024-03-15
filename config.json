@@ -1,10 +1,10 @@
 {
-  "operations": ["download"],
+  "operations": ["search"],
   "args": {
-    "product": "NWLR_380",
-    "csv": "./test.csv",
-    "api": "JASMES",
-    "no_repeat": true,
+    "product": "L2R",
+    "csv": "./test_JASMES.csv",
+    "api": "GPORTAL",
+    "no_repeat": false,
     "cred": "./cred.json"
   }
 }
