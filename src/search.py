@@ -84,7 +84,7 @@ def search(args: Namespace):
     print("Searching CSV ...")
     print("=============================")
 
-    df = pd.read_csv(args.csv) # read csv
+    df = pd.read_csv(args.csv, low_memory=True) # read csv
     grouped = df.groupby(["lat", "lon", "date"])
     pbar = tqdm(total=len(df), position=0, leave=True) # prepare progress bar
 
