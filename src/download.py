@@ -46,7 +46,7 @@ def download(args: Namespace):
     # this is only needed for download not search
     api.set_auth_details(args.cred)
 
-    df = pd.read_csv(args.csv) # read csv
+    df = pd.read_csv(args.csv, low_memory=True) # read csv
     df =df.groupby(group_key) # only download uniqe urls
 
     for i, (url, g) in enumerate(df):

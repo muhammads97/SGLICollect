@@ -127,7 +127,6 @@ Example:
 1. Output columns for GPORTAL:
     - identifier
     - file_status
-    - resolution
     - download_url
     - preview_url
     - cloud_coverage (%)

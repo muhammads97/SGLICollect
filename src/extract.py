@@ -101,7 +101,7 @@ def extract(args:Namespace):
     print("=============================")
 
     # reading the CSV file containing the product identifier and lat, lon pairs
-    df = pd.read_csv(args.csv)
+    df = pd.read_csv(args.csv, low_memory=True)
 
     # filter for records that contain an identifier
     filtered = df[df[group_key].str.len() >= 41]

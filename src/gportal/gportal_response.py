@@ -17,7 +17,6 @@ import pandas as pd
 OUTPUT_COLUMNS = [
     "identifier",
     "file_status",
-    "resolution",
     "download_url",
     "preview_url",
     "cloud_coverage"
@@ -62,7 +61,6 @@ class GPortalResponse:
             j = pd.DataFrame([{
                 "identifier"    : self.properties.identifier,
                 "file_status"   : self.properties.status,
-                "resolution"    : self.properties.resolution,
                 "download_url"  : self.properties.product.downloadUrl.geturl(),
                 "preview_url"   : self.properties.previews[0].url.geturl(),
                 "cloud_coverage": self.properties.meta.cloudCoverPercentage
@@ -72,7 +70,6 @@ class GPortalResponse:
             index = df.index[index]
             df.loc[index, "identifier"] = self.properties.identifier
             df.loc[index, "file_status"]=self.properties.status
-            df.loc[index, "resolution"]=self.properties.resolution
             df.loc[index, "download_url"]=self.properties.product.downloadUrl.geturl()
             df.loc[index, "preview_url"]=self.properties.previews[0].url.geturl()
             df.loc[index, "cloud_coverage"]=self.properties.meta.cloudCoverPercentage
@@ -84,7 +81,7 @@ class GPortalResponse:
         saves to csv file
         """
         try:
-            df = pd.read_csv(path)
+            df = pd.read_csv(path, low_memory=True)
         except:
             df = None
         df = self.to_dataframe(df)
@@ -97,7 +94,6 @@ class GPortalResponse:
         print(
             "ID: %s"%self.properties.identifier,
             "status: %s"%self.properties.status,
-            "resolution: %s"%self.properties.resolution,
             "download: %s"%self.properties.product.downloadUrl.geturl(),
             "preview: %s"%self.properties.previews[0].url.geturl(),
             "cloud: %s"%self.properties.meta.cloudCoverPercentage,
