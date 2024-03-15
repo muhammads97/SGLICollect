@@ -17,7 +17,7 @@ from io import open
 import os
 import tempfile
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 dirs = __file__.split("/")
 dir_index = -1
 for i, d in enumerate(dirs):
