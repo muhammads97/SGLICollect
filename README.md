@@ -246,4 +246,4 @@ Note: in this example, product_path doesn't need to be set because after the dow
 ### How to Cite SGLICollect
 If you use SGLICollect in your research or project, please cite it using the following reference:
 
-Muhammad Salah Osman, & Salem. (2024). muhammads97/SGLICollect: v2.1.0 (v2.1.0). Zenodo. https://doi.org/10.5281/zenodo.10819786
+Salah, Muhammad & Salem, Salem Ibrahim (2024). muhammads97/SGLICollect: v2.1.0 (v2.1.0). Zenodo. https://doi.org/10.5281/zenodo.10819786
